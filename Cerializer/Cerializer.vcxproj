@@ -120,6 +120,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CppRestJsonConverter.h" />
+    <ClInclude Include="CppRestJsonObj.h" />
     <ClInclude Include="QJsonConverter.h" />
     <ClInclude Include="QJsonObj.h" />
     <ClInclude Include="RapidJsonObj.h" />

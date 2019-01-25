@@ -10,19 +10,19 @@ constexpr void for_sequence(std::integer_sequence<T, S...>, F&& f) {
     };
 }
 
-template<typename Class, typename T>
+template<typename Class, typename T, typename IdentiferType>
 struct PropertyImpl {
-    constexpr PropertyImpl(T Class::*aMember, char const* aName) : member{ aMember }, name{ aName } {}
+    constexpr PropertyImpl(T Class::*aMember, IdentiferType const* aName) : member{ aMember }, name{ aName } {}
 
     using Type = T;
 
     T Class::*member;
-    char const* name;
+    IdentiferType const* name;
 };
 
-template<typename Class, typename T>
-constexpr auto property(T Class::*member, char const* name) {
-    return PropertyImpl<Class, T>{member, name};
+template<typename Class, typename T, typename IdentiferType>
+constexpr auto property(T Class::*member, IdentiferType const* name) {
+    return PropertyImpl<Class, T, IdentiferType>{member, name};
 }
 
 namespace Serializable {
@@ -82,3 +82,13 @@ return std::make_tuple( \
 
 #define S_PROPERTY(ClassName, Name)  \
 property(&ClassName::Name, #Name )
+
+
+#ifdef _WIN32
+    #define CPPREST_S_PROPERTY(ClassName, Name)  \
+    property(&ClassName::Name, L#Name)
+#else
+    #define CPPREST_S_PROPERTY(ClassName, Name)  \
+    property(&ClassName::Name, #Name)
+#endif
+

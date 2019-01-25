@@ -150,5 +150,11 @@
     <ClInclude Include="QJsonObj.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CppRestJsonConverter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CppRestJsonObj.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 #include "Cerializer/Serializable.h"
 #include "Cerializer/QJsonConverter.h"
 
