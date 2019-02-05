@@ -183,20 +183,12 @@ struct CppRestJsonConverter
     template<class T, typename std::enable_if<std::is_same<double, T>::value>::type* = nullptr>
     static T toType(const web::json::value& data)
     {
-        if (!data.is_double())
-        {
-            return 0;
-        }
         return data.as_double();
     }
 
     template<class T, typename std::enable_if<std::is_same<float, T>::value>::type* = nullptr>
     static T toType(const web::json::value& data)
     {
-        if (!data.is_double())
-        {
-            return 0;
-        }
         return static_cast<float>(data.as_double());
     }
 
