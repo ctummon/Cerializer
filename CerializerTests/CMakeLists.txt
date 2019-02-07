@@ -4,6 +4,20 @@ if (${BUILD_CPP_REST})
 list(APPEND SourceFiles ${CMAKE_CURRENT_SOURCE_DIR}/CppRestJsonTests.cpp)
 endif (${BUILD_CPP_REST})
 
+if (${BUILD_QT})
+list(APPEND SourceFiles ${CMAKE_CURRENT_SOURCE_DIR}/QJsonTests.cpp)
+endif(${BUILD_QT})
+
 add_executable(CerializerTests ${SourceFiles})
+
+if (${BUILD_CPP_REST})
+find_package(cpprestsdk REQUIRED)
+target_link_libraries(CerializerTests PRIVATE cpprestsdk::cpprest)
+endif (${BUILD_CPP_REST})
+
+if (${BUILD_QT})
+find_package(Qt5Core CONFIG REQUIRED)
+target_link_libraries(CerializerTests PRIVATE Qt5::Core)
+endif(${BUILD_QT})
 
 target_link_libraries(CerializerTests INTERFACE Cerializer)
