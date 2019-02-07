@@ -21,7 +21,7 @@ class Hand : public Cerial::CppRestJsonObj<Hand>
 public:
     int fingers{ 0 };
     
-    S_PROPERTIES_BEGIN
+   S_PROPERTIES_BEGIN
         CPPREST_S_PROPERTY(Hand, fingers),
    S_PROPERTIES_END
 };
@@ -34,7 +34,7 @@ public:
     std::vector<Hand> hands{ 0 };
 
     
-    S_PROPERTIES_BEGIN
+   S_PROPERTIES_BEGIN
         //Note for other JSON serializers use S_PROPERTY instead, see tests for examples.
         CPPREST_S_PROPERTY(Person, name),
         CPPREST_S_PROPERTY(Person, age),
