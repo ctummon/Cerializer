@@ -8,5 +8,8 @@ namespace Cerial {
     class QJsonObj : public Serializable::Object<T, QJsonConverter> {
     public:
         virtual ~QJsonObj<T>() = default;
+    private:
+        QJsonObj() = default;
+        friend T;
     };
 }

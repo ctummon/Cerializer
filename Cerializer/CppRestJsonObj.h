@@ -8,5 +8,8 @@ namespace Cerial {
     class CppRestJsonObj : public Serializable::Object<T, CppRestJsonConverter> {
     public:
         virtual ~CppRestJsonObj<T>() = default;
+    private:
+        CppRestJsonObj() = default;
+        friend T;
     };
 }

@@ -29,6 +29,8 @@ namespace QtJsonTests {
         S_PROPERTIES_END
     };
 
+    class Test : public Cerial::QJsonObj<Face>
+    {};
     class Person : public Cerial::QJsonObj<Person>
     {
     public:
