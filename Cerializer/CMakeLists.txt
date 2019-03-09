@@ -2,17 +2,25 @@ add_library(Cerializer INTERFACE)
 
 set(Headers ${CMAKE_CURRENT_SOURCE_DIR}/Serializable.h)
 
+list(APPEND Headers ${CMAKE_CURRENT_SOURCE_DIR}/CerialUtils.h)
+
 if (${BUILD_CPP_REST})
 list(APPEND Headers 
     ${CMAKE_CURRENT_SOURCE_DIR}/CppRestJsonObj.h 
     ${CMAKE_CURRENT_SOURCE_DIR}/CppRestJsonConverter.h)
 endif (${BUILD_CPP_REST})
 
-if (${BUILD_CPP_REST})
+if (${BUILD_QT})
 list(APPEND Headers 
     ${CMAKE_CURRENT_SOURCE_DIR}/QJsonObj.h 
     ${CMAKE_CURRENT_SOURCE_DIR}/QJsonConverter.h)
-endif (${BUILD_CPP_REST})
+endif (${BUILD_QT})
+
+if (${BUILD_RAPID_JSON})
+list(APPEND Headers 
+    ${CMAKE_CURRENT_SOURCE_DIR}/RapidJsonObj.h 
+    ${CMAKE_CURRENT_SOURCE_DIR}/RapidJsonConverter.h)
+endif (${BUILD_RAPID_JSON})
 
 target_include_directories(Cerializer INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_sources(Cerializer INTERFACE ${Headers}
