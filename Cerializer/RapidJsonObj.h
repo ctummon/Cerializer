@@ -16,7 +16,7 @@ namespace Cerial
     public:
         virtual ~RapidJsonObj<T>() = default;
 
-        static T fromJson(const typename RapidJsonConverter::JsonObj& data)
+        static T fromJson(const rapidjson::Document& data)
         {
             T object;
 
@@ -37,7 +37,7 @@ namespace Cerial
             return object;
         }
 
-        static std::string toJsonStr() const
+        std::string toJsonStr() const
         {
             auto derived = static_cast<const T&>(*this);
 
@@ -59,10 +59,10 @@ namespace Cerial
 
             baseWriter.EndObject();
 
-            return baseWriter.GetString();
+            return sb.GetString();
         }
 
-        static void appendJsonStr(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) const
+        void appendJsonStr(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) const
         {
             auto derived = static_cast<const T&>(*this);
             constexpr auto sizeOfProperties = std::tuple_size<decltype(derived.properties())>::value;

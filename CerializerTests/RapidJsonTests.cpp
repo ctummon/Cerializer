@@ -1,6 +1,7 @@
 #include "catch.hpp"
 
 #include "Cerializer\RapidJsonObj.h"
+#include <rapidjson\document.h>
 
 namespace RapidJsonTests {
     class Hands : public Cerial::RapidJsonObj<Hands>
@@ -74,13 +75,12 @@ namespace RapidJsonTests {
         bob.lastName = L"timOThy";
         bob.name = "bobsans";
 
-        //QJsonObject bobJson = bob.toJson();
-        //QJsonDocument bobJsonDoc(bobJson);
-        //QString bobString(bobJsonDoc.toJson(QJsonDocument::Compact));
+        std::string bobJsonStr = bob.toJsonStr();
 
-        //QJsonDocument bobJsonDocClone = QJsonDocument::fromJson(bobString.toUtf8());
+        rapidjson::Document bobJsonDocClone;
+        bobJsonDocClone.Parse(bobJsonStr.c_str());
         
-        Person bobsClone;// = Person::fromJson(bobJsonDocClone.object());
+        Person bobsClone = Person::fromJson(bobJsonDocClone);
 
         REQUIRE(bob.age == bobsClone.age);
         REQUIRE(bob.ageInMs == bobsClone.ageInMs);

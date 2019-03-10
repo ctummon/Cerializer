@@ -10,6 +10,12 @@
 
 #include <type_traits>
 
+#include <locale>
+#include <codecvt>
+#include <string>
+
+std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+
 namespace Cerial
 {
     template<typename> class RapidJsonObj;
@@ -17,21 +23,19 @@ namespace Cerial
 
 struct RapidJsonConverter
 {
-    using JsonObj = rapidjson::Document;
-
-    static bool fieldExists(const JsonObj& data, const char* fieldName)
+    static bool fieldExists(const rapidjson::Document& data, const char* fieldName)
     {
         return data.HasMember(fieldName);
     }
 
-    static rapidjson::Value::ConstMemberIterator getField(const JsonObj& data, const char* fieldName)
+    static rapidjson::Value::ConstMemberIterator getField(const rapidjson::Document& data, const char* fieldName)
     {
         return data.FindMember(fieldName);
     }
 
     //De-serialize 
     template<class T, typename std::enable_if<std::is_base_of<Cerial::RapidJsonObj<T>, T >::value>::type* = nullptr>
-    static T toType(const JsonObj& data)
+    static T toType(const rapidjson::Document& data)
     {
         auto& v = (*data).value;
         if (v.IsObject())
@@ -220,73 +224,71 @@ struct RapidJsonConverter
     template <class T>
     static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, Cerial::RapidJsonObj<T>& val)
     {
-        //return val.toJson();
+        writer.Key(fieldName);
+        val.appendJsonStr(writer);
     }
 
     template<class T>
     static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const Cerial::RapidJsonObj<T>& val)
     {
-        //return val.toJson();
+        writer.Key(fieldName);
+        val.appendJsonStr(writer);
     }
 
     template <class T>
     static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const int& val)
     {
-        //return web::json::value(val);
-        //return rapidjson::Document();
+        writer.Key(fieldName);
+        writer.Int(val);
     }
 
     template <class T>
     static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const unsigned int& val)
     {
-        //return web::json::value(val);
-        //return rapidjson::Document();
+        writer.Key(fieldName);
+        writer.Uint(val);
     }
 
     template <class T>
     static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const long& val)
     {
-        //return web::json::value(val);
-        //return rapidjson::Document();
+        writer.Key(fieldName);
+        writer.Int64(val);
     }
 
     template <class T>
     static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const unsigned long& val)
     {
-        //return rapidjson::Document();
-        //return web::json::value(val);
+        writer.Key(fieldName);
+        writer.Uint(val);
     }
 
     template <class T>
     static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const long long& val)
     {
-        //return rapidjson::Document();
-        //return web::json::value(val);
+        writer.Key(fieldName);
+        writer.Int64(val);
     }
 
     template <class T>
     static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const double& val)
     {
-        //return rapidjson::Document();
-        //return web::json::value(val);
+        writer.Key(fieldName);
+        writer.Double(val);
     }
 
     template <class T>
     static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const bool& val)
     {
-        //return rapidjson::Document();
-        //return web::json::value(val);
+        writer.Key(fieldName);
+        writer.Bool(val);
     }
 
     template <class T>
     static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::wstring& val)
     {
-/*#ifdef _WIN32
-        return web::json::value(val);
-#else
-        return web::json::value(StringUtils::toString(val));
-#endif*/
-        //return rapidjson::Document();
+        writer.Key(fieldName);
+        writer.String(converter.from_bytes(val.as_string()));
     }
 
     template <class T>
