@@ -11,6 +11,8 @@ So far  Qt , Cpprestsdk , and RapidJson implementations are supported. I plan on
 
 Copy the Cerializer folder into your project and include the JsonObj file of your choice.
 
+(Currently only tested on Visual Studio 2017. I need to get some CI up and running...)
+
 ## Example Usage (cpprest):
 
 ``` C++
