@@ -35,12 +35,12 @@ struct RapidJsonConverter
 
     //De-serialize 
     template<class T, typename std::enable_if<std::is_base_of<Cerial::RapidJsonObj<T>, T >::value>::type* = nullptr>
-    static T toType(const rapidjson::Document& data)
-    {
-        auto& v = (*data).value;
+    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    { 
+        auto& v = (*data).value.;
         if (v.IsObject())
         {
-            return T::fromJson(v.GetObjectA());
+            return T::fromJson(v->GetObject());
         }
         return T();
     }
@@ -222,84 +222,73 @@ struct RapidJsonConverter
 
     //Serialize
     template <class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, Cerial::RapidJsonObj<T>& val)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, Cerial::RapidJsonObj<T>& val)
     {
-        writer.Key(fieldName);
         val.appendJsonStr(writer);
     }
 
     template<class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const Cerial::RapidJsonObj<T>& val)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const Cerial::RapidJsonObj<T>& val)
     {
-        writer.Key(fieldName);
         val.appendJsonStr(writer);
     }
 
     template <class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const int& val)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const int& val)
     {
-        writer.Key(fieldName);
         writer.Int(val);
     }
 
     template <class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const unsigned int& val)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const unsigned int& val)
     {
-        writer.Key(fieldName);
         writer.Uint(val);
     }
 
     template <class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const long& val)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const long& val)
     {
-        writer.Key(fieldName);
         writer.Int64(val);
     }
 
     template <class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const unsigned long& val)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const unsigned long& val)
     {
-        writer.Key(fieldName);
         writer.Uint(val);
     }
 
     template <class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const long long& val)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const long long& val)
     {
-        writer.Key(fieldName);
         writer.Int64(val);
     }
 
     template <class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const double& val)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const double& val)
     {
-        writer.Key(fieldName);
         writer.Double(val);
     }
 
     template <class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const bool& val)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const bool& val)
     {
-        writer.Key(fieldName);
         writer.Bool(val);
     }
 
     template <class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::wstring& val)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::wstring& val)
     {
-        writer.Key(fieldName);
-        writer.String(converter.from_bytes(val.as_string()));
+        writer.String(converter.to_bytes(val).c_str());
     }
 
     template <class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::string& val)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::string& val)
     {
-        //return web::json::value(StringUtils::toSparkString(val));
-        //return rapidjson::Document();
+        writer.String(val.c_str());
     }
 
     template <class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::shared_ptr<typename T::element_type>& ptr)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::shared_ptr<typename T::element_type>& ptr)
     {
         if (ptr)
         {
@@ -308,27 +297,28 @@ struct RapidJsonConverter
     }
 
     template<class T>
-    static void convertToJsonArray(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const T& container)
+    static void convertToJsonArray(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const T& container)
     {
-        /*std::vector<web::json::value> jsonValArray;
+        writer.StartArray();
 
         for (const auto& i : container)
         {
-            jsonValArray.push_back(fromType<typename T::value_type>(i));
+            //move key writing to main loop.
+            fromType<typename T::value_type>(writer ,i);
         }
 
-        return web::json::value::array(jsonValArray);*/
+        writer.EndArray();
     }
 
     template<class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::vector<typename T::value_type>& inputVector)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::vector<typename T::value_type>& inputVector)
     {
-        convertToJsonArray(fieldName, writer, inputVector);
+        convertToJsonArray(writer, inputVector);
     }
 
     template<class T>
-    static void fromType(const char* fieldName, rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::set<typename T::value_type>& inputSet)
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::set<typename T::value_type>& inputSet)
     {
-        convertToJsonArray(fieldName, writer, inputSet);
+        convertToJsonArray(writer, inputSet);
     }
 };
