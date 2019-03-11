@@ -28,196 +28,193 @@ struct RapidJsonConverter
         return data.HasMember(fieldName);
     }
 
-    static rapidjson::Value::ConstMemberIterator getField(const rapidjson::Document& data, const char* fieldName)
+    static bool fieldExists(const rapidjson::GenericObject<true, rapidjson::Value> & data, const char* fieldName)
     {
-        return data.FindMember(fieldName);
+        return data.HasMember(fieldName);
+    }
+
+    static const rapidjson::Value& getField(const rapidjson::Document& data, const char* fieldName)
+    {
+        const auto& itr = data.FindMember(fieldName);
+        return itr->value;
+    }
+
+    static const rapidjson::Value& getField(const rapidjson::GenericObject<true, rapidjson::Value> & data, const char* fieldName)
+    {
+        const auto& itr = data.FindMember(fieldName);
+        return itr->value;
     }
 
     //De-serialize 
     template<class T, typename std::enable_if<std::is_base_of<Cerial::RapidJsonObj<T>, T >::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     { 
-        /*auto& v = (*data).value.;
         if (v.IsObject())
-        {
-            return T::fromJson(v->GetObject());
-        }*/
+        {       
+            return T::fromJson(v.GetObject());
+        }
         return T();
     }
 
     template<class T, typename std::enable_if<std::is_same<unsigned short, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        unsigned short returnVal{ 0 };
-        /*if (data.is_number())
+        unsigned short returnVal{};
+        if (v.IsUint())
         {
-            const auto& num = data.as_number();
-            if (num.is_int32())
-            {
-                returnVal = num.to_int32();
-            }
-        }*/
+            returnVal = static_cast<unsigned short>(v.GetUint());
+        }
         return returnVal;
     }
 
     template<class T, typename std::enable_if<std::is_same<int, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        int returnVal{ 0 };
-        /*if (data.is_number())
+        int returnVal{};
+        if (v.IsInt())
         {
-            const auto& num = data.as_number();
-            if (num.is_int32())
-            {
-                returnVal = num.to_int32();
-            }
-        }*/
+            returnVal = v.GetInt();
+        }
         return returnVal;
     }
 
     template<class T, typename std::enable_if<std::is_same<unsigned int, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        unsigned int returnVal{ 0 };
-        /*if (data.is_number())
+        unsigned int returnVal{};
+        if (v.IsUint())
         {
-            const auto& num = data.as_number();
-            if (num.is_uint32())
-            {
-                returnVal = num.to_uint32();
-            }
-        }*/
+            returnVal = v.GetUint();
+        }
         return returnVal;
     }
 
     template<class T, typename std::enable_if<std::is_same<long, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        long returnVal{ 0 };
-        /*if (data.is_number())
+        long returnVal{};
+        if (v.IsInt64())
         {
-            const auto& num = data.as_number();
-            if (num.is_int64())
-            {
-                returnVal = num.to_int64();
-            }
-        }*/
+            returnVal = v.GetInt64();
+        }
         return returnVal;
     }
 
     template<class T, typename std::enable_if<std::is_same<unsigned long, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        unsigned long returnVal{ 0 };
-        /*if (data.is_number())
+        unsigned long returnVal{};
+        if (v.IsUint64())
         {
-            const auto& num = data.as_number();
-            if (num.is_uint64())
-            {
-                returnVal = num.to_uint64();
-            }
-        }*/
+            returnVal = static_cast<unsigned long>(v.GetUint64());
+        }
         return returnVal;
     }
 
     template<class T, typename std::enable_if<std::is_same<long long, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        long long returnVal{ 0 };
-        /*if (data.is_number())
+        long long returnVal{};
+        if (v.IsInt64())
         {
-            const auto& num = data.as_number();
-            if (num.is_uint64())
-            {
-                returnVal = num.to_uint64();
-            }
-        }*/
+            returnVal = static_cast<long long>(v.GetInt64());
+        }
         return returnVal;
     }
 
     template<class T, typename std::enable_if<std::is_same<std::wstring, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        /*if (!data.is_string())
+        T returnVal;
+        if (v.IsString())
         {
-            return T();
+            returnVal = converter.from_bytes(v.GetString());
         }
-#ifdef _WIN32
-        return data.as_string();
-#else
-        return StringUtils::toWString(data.as_string());
-#endif*/
-        return T();
+        return returnVal;
     }
 
     template<class T, typename std::enable_if<std::is_same<std::string, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        /*if (!data.is_string())
+        T returnVal;
+        if (v.IsString())
         {
-            return T();
+            returnVal = v.GetString();
         }
-        return StringUtils::fromSparkString(data.as_string());*/
-        return T();
+        return returnVal;
     }
 
     template<class T, typename std::enable_if<std::is_same<double, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        /*if (!data.is_double())
+        double returnVal{};
+        if (v.IsDouble())
         {
-            return 0;
+            returnVal = v.GetDouble();
         }
-        return data.as_double();*/
-        return 0;
+        return returnVal;
+    }
+
+    template<class T, typename std::enable_if<std::is_same<float, T>::value>::type* = nullptr>
+    static T toType(const rapidjson::Value& v)
+    {
+        float returnVal{};
+        if (v.IsDouble())
+        {
+            returnVal = static_cast<float>(v.GetDouble());
+        }
+        return returnVal;
     }
 
     template<class T, typename std::enable_if<std::is_same<bool, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        /*
-        if (!data.is_boolean())
+        bool returnVal{};
+        if (v.IsBool())
         {
-            return false;
+            returnVal = v.GetBool();
         }
-        return data.as_bool();*/
-        return false;
+        return returnVal;
     }
 
     template<class T, typename std::enable_if<std::is_same<std::shared_ptr<typename T::element_type>, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        return std::make_shared<T::element_type>(toType<T::element_type>(data));
+        return std::make_shared<T::element_type>(toType<T::element_type>(v));
     }
 
     template<class T, typename std::enable_if<std::is_same<std::vector<typename T::value_type>, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
         T returnArray;
-        /*if (data.is_array())
+        if (v.IsArray())
         {
-            const auto& arrayData = data.as_array();
-            for (const auto& i : arrayData)
+            const auto& arrayData = v.GetArray();
+            const auto& endItr = arrayData.end();
+            auto itr = arrayData.begin();
+            for (;itr != endItr; ++itr)
             {
-                returnArray.push_back(toType<typename T::value_type>(i));
+                returnArray.push_back(toType<typename T::value_type>(*itr));
             }
-        }*/
+        }
         return returnArray;
     }
 
     template<class T, typename std::enable_if<std::is_same<std::set<typename T::value_type>, T>::value>::type* = nullptr>
-    static T toType(const rapidjson::Value::ConstMemberIterator& data)
+    static T toType(const rapidjson::Value& v)
     {
-        T returnArray;
-        /*if (data.is_array())
+        T returnSet;
+        if (v.IsArray())
         {
-            const auto& arrayData = data.as_array();
-            for (const auto& i : arrayData)
+            const auto& arrayData = v.GetArray();
+            const auto& endItr = arrayData.end();
+            auto itr = arrayData.begin();
+            for (; itr != endItr; ++itr)
             {
-                returnArray.insert(toType<typename T::value_type>(i));
+                returnSet.insert(toType<typename T::value_type>(*itr));
             }
-        }*/
-        return returnArray;
+        }
+        return returnSet;
     }
 
     //Serialize
@@ -267,6 +264,12 @@ struct RapidJsonConverter
     static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const double& val)
     {
         writer.Double(val);
+    }
+
+    template <class T>
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const float& val)
+    {
+        writer.Double(static_cast<double>(val));
     }
 
     template <class T>

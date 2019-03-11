@@ -37,7 +37,7 @@ namespace Cerial
             return object;
         }
 
-        /*static T fromJson(const rapidjson::Object& data)
+        static T fromJson(const rapidjson::GenericObject<true, rapidjson::Value> & data)
         {
             T object;
 
@@ -56,14 +56,14 @@ namespace Cerial
             });
 
             return object;
-        }*/
+        }
 
         std::string toJsonStr() const
         {
             auto derived = static_cast<const T&>(*this);
 
             rapidjson::StringBuffer sb;
-            rapidjson::PrettyWriter<rapidjson::StringBuffer> baseWriter;
+            rapidjson::PrettyWriter<rapidjson::StringBuffer> baseWriter(sb);
 
             constexpr auto sizeOfProperties = std::tuple_size<decltype(derived.properties())>::value;
 
