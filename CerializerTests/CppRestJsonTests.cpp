@@ -70,8 +70,8 @@ namespace CppRestObjTests {
         bob.hands[0].fingers.insert(9);
         bob.hands[1].knuckles = { 1.5,2,3.7 };
         bob.hands[2].nails = 7;
-        bob.lastName = L"timOThy";
-        bob.name = "bobsans";
+        bob.lastName = L"samson";
+        bob.name = "bobby";
 
         web::json::value bobJson = bob.toJson();
         utility::string_t bobJsonStr = bobJson.serialize();

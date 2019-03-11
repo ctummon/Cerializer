@@ -29,8 +29,6 @@ namespace RapidJsonTests {
         S_PROPERTIES_END
     };
 
-    class Test : public Cerial::RapidJsonObj<Face>
-    {};
     class Person : public Cerial::RapidJsonObj<Person>
     {
     public:
@@ -72,8 +70,8 @@ namespace RapidJsonTests {
         bob.hands[0].fingers.insert(9);
         bob.hands[1].knuckles = { 1.5,2,3.7 };
         bob.hands[2].nails = 7;
-        bob.lastName = L"timOThy";
-        bob.name = "bobsans";
+        bob.lastName = L"samson";
+        bob.name = "bobby";
 
         std::string bobJsonStr = bob.toJsonStr();
 
