@@ -37,7 +37,7 @@ namespace Cerial
             return object;
         }
 
-        static T fromJson(const rapidjson::Object& data)
+        /*static T fromJson(const rapidjson::Object& data)
         {
             T object;
 
@@ -56,7 +56,7 @@ namespace Cerial
             });
 
             return object;
-        }
+        }*/
 
         std::string toJsonStr() const
         {

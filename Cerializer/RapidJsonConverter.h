@@ -37,11 +37,11 @@ struct RapidJsonConverter
     template<class T, typename std::enable_if<std::is_base_of<Cerial::RapidJsonObj<T>, T >::value>::type* = nullptr>
     static T toType(const rapidjson::Value::ConstMemberIterator& data)
     { 
-        auto& v = (*data).value.;
+        /*auto& v = (*data).value.;
         if (v.IsObject())
         {
             return T::fromJson(v->GetObject());
-        }
+        }*/
         return T();
     }
 
