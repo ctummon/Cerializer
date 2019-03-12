@@ -5,7 +5,14 @@ Cerializer is a set of headers that help take the pain out of JSON serialization
 You no longer need to waste time manually parsing JSON.
 All you need is your favourite JSON library.
 
-So far  Qt , Cpprestsdk , and RapidJson implementations are supported. I plan on adding as many as I can, feel free to contribute!
+So far the following implmentations are supported:
+
+- Qt
+- Cpprestsdk
+- RapidJson
+- nlohmann::json
+
+I plan on adding as many as I can, feel free to contribute!
 
 ## Getting started:
 
