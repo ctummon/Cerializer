@@ -22,6 +22,12 @@ list(APPEND Headers
     ${CMAKE_CURRENT_SOURCE_DIR}/RapidJsonConverter.h)
 endif (${BUILD_RAPID_JSON})
 
+if (${BUILD_NLOHMANN})
+list(APPEND Headers 
+    ${CMAKE_CURRENT_SOURCE_DIR}/NlohmannJsonObj.h 
+    ${CMAKE_CURRENT_SOURCE_DIR}/NlohmannJsonConverter.h)
+endif (${BUILD_NLOHMANN})
+
 target_include_directories(Cerializer INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_sources(Cerializer INTERFACE ${Headers}
 )

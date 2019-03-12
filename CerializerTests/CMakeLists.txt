@@ -12,6 +12,10 @@ if (${BUILD_RAPID_JSON})
 list(APPEND SourceFiles ${CMAKE_CURRENT_SOURCE_DIR}/RapidJsonTests.cpp)
 endif(${BUILD_RAPID_JSON})
 
+if (${BUILD_NLOHMANN})
+list(APPEND SourceFiles ${CMAKE_CURRENT_SOURCE_DIR}/NlohmannJsonTests.cpp)
+endif(${BUILD_NLOHMANN})
+
 add_executable(CerializerTests ${SourceFiles})
 
 if (${BUILD_CPP_REST})

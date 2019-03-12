@@ -1,3 +1,9 @@
+#pragma  once
+
+#include <locale>
+#include <codecvt>
+#include <string>
+
 template <typename T, T... S, typename F>
 constexpr void for_sequence(std::integer_sequence<T, S...>, F&& f) {
     using unpack_t = int[];
@@ -40,3 +46,5 @@ property(&ClassName::Name, #Name )
 #define CPPREST_S_PROPERTY(ClassName, Name)  \
     property(&ClassName::Name, #Name)
 #endif
+
+static std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> stringConverter;

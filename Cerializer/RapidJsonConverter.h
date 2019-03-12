@@ -1,5 +1,7 @@
 #pragma once
 
+#include "CerialUtils.h"
+
 #include "rapidjson/document.h"
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/prettywriter.h>
@@ -9,12 +11,6 @@
 #include <vector>
 
 #include <type_traits>
-
-#include <locale>
-#include <codecvt>
-#include <string>
-
-std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
 namespace Cerial
 {
@@ -128,7 +124,7 @@ struct RapidJsonConverter
         T returnVal;
         if (v.IsString())
         {
-            returnVal = converter.from_bytes(v.GetString());
+            returnVal = stringConverter.from_bytes(v.GetString());
         }
         return returnVal;
     }
@@ -281,7 +277,7 @@ struct RapidJsonConverter
     template <class T>
     static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const std::wstring& val)
     {
-        writer.String(converter.to_bytes(val).c_str());
+        writer.String(stringConverter.to_bytes(val).c_str());
     }
 
     template <class T>
