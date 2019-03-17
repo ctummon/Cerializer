@@ -291,7 +291,7 @@ struct RapidJsonConverter
     {
         if (ptr)
         {
-            fromType<T::element_type>(*ptr);
+            fromType<T::element_type>(writer, *ptr);
         }
     }
 

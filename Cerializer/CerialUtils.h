@@ -3,6 +3,7 @@
 #include <locale>
 #include <codecvt>
 #include <string>
+#include <tuple>
 
 template <typename T, T... S, typename F>
 constexpr void for_sequence(std::integer_sequence<T, S...>, F&& f) {
