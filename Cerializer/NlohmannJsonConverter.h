@@ -44,6 +44,17 @@ struct NlohmannJsonConverter
         return T();
     }
 
+    template<class T, typename std::enable_if<std::is_same<short, T>::value>::type* = nullptr>
+    static T toType(const JsonObj::value_type& data)
+    {
+        short returnVal{};
+        if (data.is_number_integer())
+        {
+            returnVal = data.get<short>();
+        }
+        return returnVal;
+    }
+
     template<class T, typename std::enable_if<std::is_same<unsigned short, T>::value>::type* = nullptr>
     static T toType(const JsonObj::value_type& data)
     {
