@@ -45,6 +45,21 @@ struct CppRestJsonConverter
         return T::fromJson(data);
     }
 
+    template<class T, typename std::enable_if<std::is_same<short, T>::value>::type* = nullptr>
+    static T toType(const web::json::value& data)
+    {
+        short returnVal{ 0 };
+        if (data.is_number())
+        {
+            const auto& num = data.as_number();
+            if (num.is_int32())
+            {
+                returnVal = static_cast<short>(num.to_int32());
+            }
+        }
+        return returnVal;
+    }
+
     template<class T, typename std::enable_if<std::is_same<unsigned short, T>::value>::type* = nullptr>
     static T toType(const web::json::value& data)
     {
@@ -52,7 +67,7 @@ struct CppRestJsonConverter
         if (data.is_number())
         {
             const auto& num = data.as_number();
-            if (num.is_int32())
+            if (num.is_uint32())
             {
                 returnVal = static_cast<unsigned short>(num.to_int32());
             }

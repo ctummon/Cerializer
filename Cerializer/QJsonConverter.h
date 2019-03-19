@@ -44,6 +44,17 @@ struct QJsonConverter
         }
         return T();
     }
+    
+    template<class T, typename std::enable_if<std::is_same<short, T>::value>::type* = nullptr>
+    static T toType(const QJsonValue& data)
+    {
+        short returnVal{ 0 };
+        if (data.isDouble())
+        {
+            returnVal = static_cast<short>(data.toDouble()); 
+        }
+        return returnVal;
+    }
 
     template<class T, typename std::enable_if<std::is_same<unsigned short, T>::value>::type* = nullptr>
     static T toType(const QJsonValue& data)
