@@ -18,15 +18,19 @@ struct NlohmannJsonConverter
 {
     using JsonObj = nlohmann::json;
 
-    static bool fieldExists(const JsonObj& data, const char* fieldName)
+    static auto endItr(const JsonObj& data)
     {
-        bool found = (data.find(fieldName) != data.end());
-        return found;
+        return data.end();
     }
 
-    static JsonObj::value_type getField(const JsonObj& data, const char* fieldName)
+    static auto getField(const JsonObj& data, const char* fieldName)
     {
-        return data[fieldName];
+        return data.find(fieldName);
+    }
+
+    static auto getValue(const nlohmann::json::const_iterator& itr)
+    {
+        return *itr;
     }
 
     static void populateJsonObj(const char* fieldName, JsonObj& data, const JsonObj::value_type& memberVar)

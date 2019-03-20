@@ -21,7 +21,7 @@ namespace NlohmannJsonTests {
     class Face : public Cerial::NlohmannJsonObj<Face>
     {
     public:
-        int eyes{ 0 };
+        unsigned int eyes{ 0 };
 
         S_PROPERTIES_BEGIN
             S_PROPERTY(Face, eyes)
@@ -37,6 +37,7 @@ namespace NlohmannJsonTests {
 
         Face face;
 
+        short foot{ 0 };
         unsigned short age{ 0 };
         int legs{ 0 };
         long long ageInMs{ 0 };
@@ -48,6 +49,7 @@ namespace NlohmannJsonTests {
             S_PROPERTY(Person, lastName),
             S_PROPERTY(Person, hands),
             S_PROPERTY(Person, face),
+            S_PROPERTY(Person, foot),
             S_PROPERTY(Person, age),
             S_PROPERTY(Person, legs),
             S_PROPERTY(Person, ageInMs),
@@ -63,6 +65,7 @@ namespace NlohmannJsonTests {
         bob.age = 14;
         bob.ageInMs = 124011515;
         bob.arms = 3;
+        bob.foot = 1;
         bob.face.eyes = 2;
         bob.hairs = 1414;
         bob.hands = { Hands(), Hands(), Hands() };
@@ -81,6 +84,7 @@ namespace NlohmannJsonTests {
         REQUIRE(bob.ageInMs == bobsClone.ageInMs);
         REQUIRE(bob.arms == bobsClone.arms);
         REQUIRE(bob.face.eyes == bobsClone.face.eyes);
+        REQUIRE(bob.foot == bobsClone.foot);
         REQUIRE(bob.hairs == bobsClone.hairs);
         REQUIRE(bob.hands.size() == bobsClone.hands.size());
         REQUIRE(bob.hands[0].fingers.size() == bobsClone.hands[0].fingers.size());

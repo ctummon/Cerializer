@@ -18,15 +18,19 @@ struct QJsonConverter
 {
     using JsonObj = QJsonObject;
 
-    static bool fieldExists(const JsonObj& data, const char* fieldName)
+    static auto endItr(const JsonObj& data)
     {
-        bool found = (data.find(fieldName) != data.end());
-        return found;
+        return data.end();
     }
 
-    static QJsonValue getField(const JsonObj& data, const char* fieldName)
+    static auto getField(const JsonObj& data, const char* fieldName)
     {
-        return data.value(fieldName);
+        return data.find(fieldName);
+    }
+
+    static auto getValue(const QJsonObject::const_iterator& itr)
+    {
+        return itr.value();
     }
 
     static void populateJsonObj(const char* fieldName, JsonObj& data, const QJsonValue& memberVar)

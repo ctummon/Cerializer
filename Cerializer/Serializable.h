@@ -22,9 +22,10 @@ namespace Serializable {
 
                 using Type = typename decltype(property)::Type;
 
-                if (typename Converter::fieldExists(data, property.name))
+                const auto& itr = Converter::getField(data, property.name);
+                if (itr != Converter::endItr(data))
                 {
-                    object.*(property.member) = Converter::template toType<Type>(Converter::getField(data, property.name));
+                    object.*(property.member) = Converter::template toType<Type>(Converter::getValue(itr));
                 }
             });
 

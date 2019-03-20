@@ -20,17 +20,29 @@ namespace Cerial
 struct CppRestJsonConverter
 {
     using JsonObj = web::json::value;
-        
-    template<typename IdentifierType>
-    static bool fieldExists(const JsonObj& data, const IdentifierType* fieldName)
+
+    static auto endItr(const JsonObj& data)
     {
-        return data.has_field(fieldName);
+        if (data.is_object())
+        {
+            return data.as_object().cend();
+        }
+        return web::json::object::const_iterator();
+    }
+
+    static auto getValue(const web::json::object::const_iterator& itr)
+    {
+        return itr->second;
     }
 
     template<typename IdentifierType>
-    static JsonObj getField(const JsonObj& data, const IdentifierType* fieldName)
+    static auto getField(const JsonObj& data, const IdentifierType* fieldName)
     {
-        return data.at(fieldName);
+        if (data.is_object())
+        {
+            return data.as_object().find(fieldName);
+        }
+        return web::json::object::const_iterator();
     }
 
     template<typename IdentifierType>

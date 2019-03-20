@@ -19,16 +19,6 @@ namespace Cerial
 
 struct RapidJsonConverter
 {
-    /*static bool fieldExists(const rapidjson::Document& data, const char* fieldName)
-    {
-        return data.HasMember(fieldName);
-    }
-
-    static bool fieldExists(const rapidjson::GenericObject<true, rapidjson::Value> & data, const char* fieldName)
-    {
-        return data.HasMember(fieldName);
-    }*/
-
     static const auto getField(const rapidjson::Document& data, const char* fieldName)
     {
         return data.FindMember(fieldName);
@@ -100,7 +90,7 @@ struct RapidJsonConverter
         long returnVal{};
         if (v.IsInt64())
         {
-            returnVal = v.GetInt64();
+            returnVal = static_cast<long>(v.GetInt64());
         }
         return returnVal;
     }

@@ -116,10 +116,10 @@ Note: I used two JSON files of pre-generated (using Cerializer) data 1,582KB and
 
    Library    | Total Time | Base Parse Time | Cerializer Time | Additional Overhead
 --------------|------------|-----------------|-----------------|--------------------
-  cpprestsdk  |    661ms   |      234ms      |      427ms      |        x1.82
-  nlohmann    |    517ms   |      163ms      |      354ms      |        x2.17
-  Qt          |    274ms   |      103ms      |      171ms      |        x1.68
-  RapidJson   |     78ms   |       37ms      |       41ms      |        x1.11
+  cpprestsdk  |    619ms   |      235ms      |      384ms      |        x1.63
+  nlohmann    |    492ms   |      167ms      |      325ms      |        x1.95
+  Qt          |    230ms   |      103ms      |      127ms      |        x1.23
+  RapidJson   |     66ms   |       34ms      |       32ms      |        x0.94
   
   ![Parse time](https://github.com/CathalT/nativejson-benchmark/blob/cerializer_tests/sample/performance_unknown_win32_vc2013_1.%20Parse_Time%20(ms).jpeg)
   
@@ -131,10 +131,10 @@ Note: RapidJson writes directly to StringBuffer using the Writer class.
   
    Library    | Total Time | Base Stringify Time | Cerializer Time | Additional Overhead
 --------------|------------|---------------------|-----------------|--------------------
-  cpprestsdk  |    601ms   |         77ms        |      524ms      |        x6.81
-  nlohmann    |    560ms   |        190ms        |      370ms      |        x1.95
-  Qt          |    429ms   |        275ms        |      154ms      |        x0.56
-  RapidJson   |     79ms   |         26ms        |       53ms      |        x2.04
+  cpprestsdk  |    587ms   |         78ms        |      509ms      |        x6.53
+  nlohmann    |    565ms   |        195ms        |      370ms      |        x1.90
+  Qt          |    421ms   |        271ms        |      150ms      |        x0.55
+  RapidJson   |     80ms   |         26ms        |       57ms      |        x2.19
   
 ![Stringify time](https://github.com/CathalT/nativejson-benchmark/blob/cerializer_tests/sample/performance_unknown_win32_vc2013_2.%20Stringify_Time%20(ms).jpeg)
 

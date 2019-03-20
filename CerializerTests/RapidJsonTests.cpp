@@ -22,7 +22,7 @@ namespace RapidJsonTests {
     class Face : public Cerial::RapidJsonObj<Face>
     {
     public:
-        int eyes{ 0 };
+        unsigned int eyes{ 0 };
 
         S_PROPERTIES_BEGIN
             S_PROPERTY(Face, eyes)
@@ -87,6 +87,7 @@ namespace RapidJsonTests {
         REQUIRE(bob.ageInMs == bobsClone.ageInMs);
         REQUIRE(bob.arms == bobsClone.arms);
         REQUIRE(bob.face.eyes == bobsClone.face.eyes);
+        REQUIRE(bob.foot == bobsClone.foot);
         REQUIRE(bob.hairs == bobsClone.hairs);
         REQUIRE(bob.hands.size() == bobsClone.hands.size());
         REQUIRE(bob.hands[0].fingers.size() == bobsClone.hands[0].fingers.size());
