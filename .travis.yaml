@@ -22,7 +22,12 @@ matrix:
 
 
 before_install:
-    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then eval "${MATRIX_EVAL}"
-    
+    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then eval "${MATRIX_EVAL}"; fi
+ 
+before_script:
+    - mkdir build
+    - cd build
+    - cmake ..
+  
 script:
-    - cmake
+    - make && make test
