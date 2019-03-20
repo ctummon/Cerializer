@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.7)
 
 project (CerializerTests)
 
-include_directories ("${PROJECT_SOURCE_DIR}")
+include_directories ("${PROJECT_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}\\thirdparty\\rapidjson\\include" "${PROJECT_SOURCE_DIR}\\thirdparty\\json\\include")
 
 set (CerializerTests_VERSION_MAJOR 0)
 set (CerializerTests_VERSION_MINOR 1)
