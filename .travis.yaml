@@ -27,7 +27,7 @@ before_install:
 before_script:
     - mkdir build
     - cd build
-    - cmake .. -DBUILD_RAPID_JSON
+    - cmake .. -DBUILD_RAPID_JSON:BOOL=ON
   
 script:
     - make
