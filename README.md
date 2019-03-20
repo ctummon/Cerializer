@@ -124,7 +124,7 @@ Note: I used two JSON files of pre-generated (using Cerializer) data 1,582KB and
   ![Parse time](https://github.com/CathalT/nativejson-benchmark/blob/cerializer_tests/sample/performance_unknown_win32_vc2013_1.%20Parse_Time%20(ms).jpeg)
   
 Not as fast as I would have hoped, but I can't tell if its the underlying library calls that are slow or if I'm using the APIs inefficiently, but I don't think its the glue code itself.
-The RapidJson implementation gives me the results I would expect, almost a 1:1 ratio, I'm essientially building the JSON object in memory twice, once for the DOM and once for the struct.
+The RapidJson implementation gives me the results I would expect, almost a 1:1 ratio, I'm essentially building the JSON object in memory twice, once for the DOM and once for the struct.
 
 ### Stringify (C++ Struct -> Build JSON DOM -> String) 
 Note: RapidJson writes directly to StringBuffer using the Writer class.
