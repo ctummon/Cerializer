@@ -27,7 +27,8 @@ before_install:
 before_script:
     - mkdir build
     - cd build
-    - cmake ..
+    - cmake .. -DBUILD_RAPID_JSON
   
 script:
-    - make && make test
+    - make
+    - ./CerializerTests.out
