@@ -19,7 +19,7 @@ namespace Cerial
 
 struct RapidJsonConverter
 {
-    static bool fieldExists(const rapidjson::Document& data, const char* fieldName)
+    /*static bool fieldExists(const rapidjson::Document& data, const char* fieldName)
     {
         return data.HasMember(fieldName);
     }
@@ -27,18 +27,16 @@ struct RapidJsonConverter
     static bool fieldExists(const rapidjson::GenericObject<true, rapidjson::Value> & data, const char* fieldName)
     {
         return data.HasMember(fieldName);
+    }*/
+
+    static const auto getField(const rapidjson::Document& data, const char* fieldName)
+    {
+        return data.FindMember(fieldName);
     }
 
-    static const rapidjson::Value& getField(const rapidjson::Document& data, const char* fieldName)
+    static const auto getField(const rapidjson::GenericObject<true, rapidjson::Value> & data, const char* fieldName)
     {
-        const auto& itr = data.FindMember(fieldName);
-        return itr->value;
-    }
-
-    static const rapidjson::Value& getField(const rapidjson::GenericObject<true, rapidjson::Value> & data, const char* fieldName)
-    {
-        const auto& itr = data.FindMember(fieldName);
-        return itr->value;
+        return data.FindMember(fieldName);
     }
 
     //De-serialize 
@@ -50,6 +48,17 @@ struct RapidJsonConverter
             return T::fromJson(v.GetObject());
         }
         return T();
+    }
+
+    template<class T, typename std::enable_if<std::is_same<short, T>::value>::type* = nullptr>
+    static T toType(const rapidjson::Value& v)
+    {
+        short returnVal{};
+        if (v.IsInt())
+        {
+            returnVal = static_cast<short>(v.GetInt());
+        }
+        return returnVal;
     }
 
     template<class T, typename std::enable_if<std::is_same<unsigned short, T>::value>::type* = nullptr>

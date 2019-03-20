@@ -28,9 +28,10 @@ namespace Cerial
 
                 using Type = typename decltype(property)::Type;
 
-                if (typename RapidJsonConverter::fieldExists(data, property.name))
+                const auto& itr = typename RapidJsonConverter::getField(data, property.name);
+                if (itr != data.MemberEnd())
                 {
-                    object.*(property.member) = RapidJsonConverter::template toType<Type>(RapidJsonConverter::getField(data, property.name));
+                    object.*(property.member) = RapidJsonConverter::template toType<Type>(itr->value);
                 }
             });
 
@@ -49,9 +50,10 @@ namespace Cerial
 
                 using Type = typename decltype(property)::Type;
 
-                if (typename RapidJsonConverter::fieldExists(data, property.name))
+                const auto& itr = typename RapidJsonConverter::getField(data, property.name);
+                if (itr != data.MemberEnd())
                 {
-                    object.*(property.member) = RapidJsonConverter::template toType<Type>(RapidJsonConverter::getField(data, property.name));
+                    object.*(property.member) = RapidJsonConverter::template toType<Type>(itr->value);
                 }
             });
 

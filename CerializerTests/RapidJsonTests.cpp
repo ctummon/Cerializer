@@ -38,6 +38,7 @@ namespace RapidJsonTests {
 
         Face face;
 
+        short foot{ 0 };
         unsigned short age{ 0 };
         int legs{ 0 };
         long long ageInMs{ 0 };
@@ -49,6 +50,7 @@ namespace RapidJsonTests {
             S_PROPERTY(Person, lastName),
             S_PROPERTY(Person, hands),
             S_PROPERTY(Person, face),
+            S_PROPERTY(Person, foot),
             S_PROPERTY(Person, age),
             S_PROPERTY(Person, legs),
             S_PROPERTY(Person, ageInMs),
@@ -64,6 +66,7 @@ namespace RapidJsonTests {
         bob.age = 14;
         bob.ageInMs = 124011515;
         bob.arms = 3;
+        bob.foot = 1;
         bob.face.eyes = 2;
         bob.hairs = 1414;
         bob.hands = { Hands(), Hands(), Hands() };
