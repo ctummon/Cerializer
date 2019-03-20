@@ -1,4 +1,4 @@
-# What is Cerializer?
+# What is Cerializer (C++14) ?
 
 Cerializer is a set of headers that help take the pain out of JSON serialization in C++ with the help of compile time 'reflection'.
 
@@ -12,13 +12,16 @@ So far the following implmentations are supported:
 - RapidJson
 - nlohmann::json
 
-I plan on adding as many as I can, feel free to contribute!
+After the performance results I'm probably going to hold off on adding any other libaries for now.
+In the future I'll have a look at some of the more performant ones and see if I can find a more efficient solution.
 
 ## Getting started:
 
 Copy the Cerializer folder into your project and include the JsonObj file of your choice.
 
-(Currently only tested on Visual Studio 2017. I need to get some CI up and running...)
+Currently only tested on VS2017 (Which means C++14, theoretically C++11 should work, need to test on clang/gcc).
+It will not compile on VS2015.
+Next steps are to get some CI up and running for clang/gcc on Mac/Linux.
 
 ## Example Usage (cpprest):
 
@@ -121,7 +124,7 @@ Note: I used two JSON files of pre-generated (using Cerializer) data 1,582KB and
   ![Parse time](https://github.com/CathalT/nativejson-benchmark/blob/cerializer_tests/sample/performance_unknown_win32_vc2013_1.%20Parse_Time%20(ms).jpeg)
   
 Not as fast as I would have hoped, but I can't tell if its the underlying library calls that are slow or if I'm using the APIs inefficiently, but I don't think its the glue code itself.
-The RapidJson implementation gives me the results I would expect, almost a 1:1 ratio, its basically iterating over the whole JSON object twice which makes sense.
+The RapidJson implementation gives me the results I would expect, almost a 1:1 ratio, I'm essientially building the JSON object in memory twice, once for the DOM and once for the struct.
 
 ### Stringify (C++ Struct -> Build JSON DOM -> String) 
 Note: RapidJson writes directly to StringBuffer using the Writer class.
@@ -135,9 +138,10 @@ Note: RapidJson writes directly to StringBuffer using the Writer class.
   
 ![Stringify time](https://github.com/CathalT/nativejson-benchmark/blob/cerializer_tests/sample/performance_unknown_win32_vc2013_2.%20Stringify_Time%20(ms).jpeg)
 
-Some interesting results, the main issue is creating the in-memory representation seems quite slow. (Again could be my usage of the APIs that is the issue)
+Some interesting results, the main issue is creating the in-memory representation seems quite slow. (Again, could be my usage of the APIs that is the issue)
 I don't believe the original nativejson benchmarks actually measure generating the DOM from C++.
 Quite surprised at the RapidJson result as I am using their Writer and String buffer, assuming there are some improvements to be made on my side.
 
 **Conclusion:**
 In future Im probably going to use a combination of Cerializer and RapidJson as it still performs well enough for my needs.
+The ideal scenario would to have Cerializer parse directly from a string -> C++ struct, but thats a different story altogether.
