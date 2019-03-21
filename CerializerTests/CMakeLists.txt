@@ -18,11 +18,9 @@ endif(${BUILD_NLOHMANN})
 
 list(APPEND includePath "${PROJECT_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}\\thirdparty\\rapidjson\\include" "${PROJECT_SOURCE_DIR}\\thirdparty\\json\\include")
 
-add_executable(CerializerTests ${SourceFiles})
+message(includePath)
 
-target_include_directories(CerializerTests PUBLIC
-  "$<BUILD_INTERFACE:${includePath}>"
-)
+add_executable(CerializerTests ${SourceFiles})
 
 if (${BUILD_CPP_REST})
 find_package(cpprestsdk REQUIRED)
