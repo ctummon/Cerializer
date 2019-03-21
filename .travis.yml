@@ -12,7 +12,7 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++ 5
+            - g++-5
             - cmake
       env:
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
