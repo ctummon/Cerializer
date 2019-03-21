@@ -1,7 +1,7 @@
 #include "catch.hpp"
 
-#include "Cerializer\CppRestJsonObj.h"
-#include <cpprest\json.h>
+#include "Cerializer/CppRestJsonObj.h"
+#include <cpprest/json.h>
 
 namespace CppRestObjTests {
     class Hands : public Cerial::CppRestJsonObj<Hands>

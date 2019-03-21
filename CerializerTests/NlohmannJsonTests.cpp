@@ -1,6 +1,6 @@
 #include "catch.hpp"
 
-#include "Cerializer\NlohmannJsonObj.h"
+#include "Cerializer/NlohmannJsonObj.h"
 
 namespace NlohmannJsonTests {
     class Hands : public Cerial::NlohmannJsonObj<Hands>

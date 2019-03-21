@@ -1,7 +1,7 @@
 #include "catch.hpp"
 
-#include "Cerializer\RapidJsonObj.h"
-#include <rapidjson\document.h>
+#include "Cerializer/RapidJsonObj.h"
+#include <rapidjson/document.h>
 
 namespace RapidJsonTests {
     class Hands : public Cerial::RapidJsonObj<Hands>

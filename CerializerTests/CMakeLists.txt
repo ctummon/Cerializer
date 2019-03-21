@@ -16,8 +16,6 @@ if (${BUILD_NLOHMANN})
 list(APPEND SourceFiles ${CMAKE_CURRENT_SOURCE_DIR}/NlohmannJsonTests.cpp)
 endif(${BUILD_NLOHMANN})
 
-message("${PROJECT_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}/thirdparty/rapidjson/include" "${PROJECT_SOURCE_DIR}/thirdparty/json/include")
-
 add_executable(CerializerTests ${SourceFiles})
 
 target_include_directories(
