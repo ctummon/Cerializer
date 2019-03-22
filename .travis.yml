@@ -30,7 +30,7 @@ before_script:
     - sudo find -name cpprestsdk-config.cmake
     - mkdir build
     - cd build
-    - cmake .. -DBUILD_RAPID_JSON:BOOL=ON -DBUILD_CPP_REST:BOOL=ON -DBUILD_CPP_REST:BOOL=ON -DBUILD_NLOHMANN:BOOL=ON -DBUILD_QT:BOOL=ON -Dcpprestsdk_DIR:PATH=/../cmake/cpprest/
+    - cmake .. -DBUILD_RAPID_JSON:BOOL=ON -DBUILD_CPP_REST:BOOL=ON -DBUILD_NLOHMANN:BOOL=ON -DBUILD_QT:BOOL=ON
   
 script:
     - make

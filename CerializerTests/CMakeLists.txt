@@ -25,6 +25,10 @@ target_include_directories(
     "${PROJECT_SOURCE_DIR}/thirdparty/json/include"
 )
 
+if(UNIX)
+set(cpprestsdk_DIR "${PROJECT_SOURCE_DIR}/cmake/cpprest")
+endif(UNIX)
+
 if (${BUILD_CPP_REST})
 find_package(cpprestsdk REQUIRED NAMES cpprestsdk cpprest)
 target_link_libraries(CerializerTests PRIVATE cpprestsdk::cpprest)
