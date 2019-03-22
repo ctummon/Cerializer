@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QtCore/qjsonobject.h>
-#include <QtCore/qjsonarray.h>
-#include <QtCore/qjsonvalue.h>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
 
 #include <set>
 #include <vector>

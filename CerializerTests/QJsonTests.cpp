@@ -1,7 +1,7 @@
 #include "catch.hpp"
 
 #include "Cerializer/QJsonObj.h"
-#include "QtCore/QJsonDocument.h"
+#include <QJsonDocument>
 
 namespace QtJsonTests {
     class Hands : public Cerial::QJsonObj<Hands>
