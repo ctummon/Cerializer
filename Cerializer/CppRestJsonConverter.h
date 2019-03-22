@@ -322,7 +322,7 @@ struct CppRestJsonConverter
     template <class T>
     static web::json::value fromType(const unsigned long long& val)
     {
-        return web::json::value::number(static_cast<uint64_t>(val_));
+        return web::json::value::number(static_cast<uint64_t>(val));
     }
 
     template <class T>
