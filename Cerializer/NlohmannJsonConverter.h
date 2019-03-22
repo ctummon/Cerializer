@@ -227,6 +227,18 @@ struct NlohmannJsonConverter
     }
 
     template <class T>
+    static JsonObj::value_type fromType(const short& val)
+    {
+        return JsonObj::value_type(val);
+    }
+
+    template <class T>
+    static JsonObj::value_type fromType(const unsigned short& val)
+    {
+        return JsonObj::value_type(val);
+    }
+
+    template <class T>
     static JsonObj::value_type fromType(const int& val)
     {
         return JsonObj::value_type(val);

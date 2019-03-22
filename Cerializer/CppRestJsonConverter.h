@@ -278,27 +278,33 @@ struct CppRestJsonConverter
     }
 
     template <class T>
+    static web::json::value fromType(const short& val)
+    {
+        return web::json::value::number(static_cast<int32_t>(val));
+    }
+
+    template <class T>
     static web::json::value fromType(const unsigned short& val)
     {
-        return web::json::value::number(static_cast<int>(val));
+        return web::json::value::number(static_cast<uint32_t>(val));
     }
 
     template <class T>
     static web::json::value fromType(const int& val)
     {
-        return web::json::value::number(val);
+        return web::json::value::number(static_cast<int32_t>(val));
     }
 
     template <class T>
     static web::json::value fromType(const unsigned int& val)
     {
-        return web::json::value::number(val);
+        return web::json::value::number(static_cast<uint32_t>(val));
     }
 
     template <class T>
     static web::json::value fromType(const long& val)
     {
-        return web::json::value::number(val);
+        return web::json::value::number(static_cast<int64_t>(val));
     }
 
     template <class T>
@@ -310,13 +316,13 @@ struct CppRestJsonConverter
     template <class T>
     static web::json::value fromType(const long long& val)
     {
-        return web::json::value::number(val);
+        return web::json::value::number(static_cast<int64_t>(val));
     }
 
     template <class T>
     static web::json::value fromType(const unsigned long long& val)
     {
-        return web::json::value::number(val);
+        return web::json::value::number(static_cast<uint64_t>(val_));
     }
 
     template <class T>

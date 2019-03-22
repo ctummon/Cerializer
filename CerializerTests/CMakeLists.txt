@@ -26,7 +26,7 @@ target_include_directories(
 )
 
 if (${BUILD_CPP_REST})
-find_package(cpprestsdk REQUIRED)
+find_package(cpprestsdk REQUIRED NAMES cpprestsdk cpprest)
 target_link_libraries(CerializerTests PRIVATE cpprestsdk::cpprest)
 endif (${BUILD_CPP_REST})
 

@@ -4,7 +4,7 @@ matrix:
   include:
     # works on Precise and Trusty
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: required
       compiler: gcc
       addons:
@@ -12,9 +12,10 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-5
             - cmake
-      env:
+            - libcpprest-dev
+            - qt5-default
+      env: 
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
 #    - os: osx
@@ -25,10 +26,13 @@ before_install:
     - if [ "$TRAVIS_OS_NAME" = "linux" ]; then eval "${MATRIX_EVAL}"; fi
  
 before_script:
+    - sudo find -name cpprestsdkConfig.cmake
+    - sudo find -name cpprestsdk-config.cmake
     - mkdir build
     - cd build
-    - cmake .. -DBUILD_RAPID_JSON:BOOL=ON
+    - cmake .. -DBUILD_RAPID_JSON:BOOL=ON -DBUILD_CPP_REST:BOOL=ON -DBUILD_CPP_REST:BOOL=ON -DBUILD_NLOHMANN:BOOL=ON -DBUILD_QT:BOOL=ON -Dcpprestsdk_DIR:PATH=/../cmake/cpprest/
   
 script:
     - make
-    - ./CerializerTests.out
+    - cd CerializerTests
+    - ./CerializerTests
