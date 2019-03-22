@@ -1,16 +1,12 @@
 #pragma once
 
+#include "CerialUtils.h"
+
 #include <cpprest/json.h>
 
 #include <set>
 
 #include <type_traits>
-
-#include <locale>
-#include <codecvt>
-#include <string>
-
-std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
 
 namespace Cerial
 {
@@ -187,7 +183,7 @@ struct CppRestJsonConverter
 #ifdef _WIN32
         return data.as_string();
 #else
-        return converter.from_bytes(data.as_string());
+        return stringConverter.from_bytes(data.as_string());
 #endif
     }
 
@@ -201,7 +197,7 @@ struct CppRestJsonConverter
             return T();
         }
 #ifdef _WIN32
-        return converter.to_bytes(data.as_string());
+        return stringConverter.to_bytes(data.as_string());
 #else
         return data.as_string();
 #endif
@@ -350,7 +346,7 @@ struct CppRestJsonConverter
 #ifdef _WIN32
         return web::json::value(val);
 #else
-        return web::json::value(converter.to_bytes(val));
+        return web::json::value(stringConverter.to_bytes(val));
 #endif
     }
 
@@ -358,7 +354,7 @@ struct CppRestJsonConverter
     static web::json::value fromType(const std::string& val)
     {
 #ifdef _WIN32
-        return web::json::value(converter.from_bytes(val));
+        return web::json::value(stringConverter.from_bytes(val));
 #else
         return web::json::value(val);   
 #endif
