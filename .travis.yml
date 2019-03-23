@@ -1,0 +1,35 @@
+language: cpp
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      sudo: required
+      compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - cmake
+            - libcpprest-dev
+            - qt5-default
+      env: 
+         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+
+#    - os: osx
+#      osx_image: xcode9.4
+
+
+before_install:
+    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then eval "${MATRIX_EVAL}" && sudo mkdir /usr/lib/x86_64-linux-gnu/cpprestsdk/ && sudo mv ./cmake/cpprest/* /usr/lib/x86_64-linux-gnu/cpprestsdk/; fi
+ 
+before_script:
+    - mkdir build
+    - cd build
+    - cmake .. -DBUILD_RAPID_JSON:BOOL=ON -DBUILD_CPP_REST:BOOL=ON -DBUILD_NLOHMANN:BOOL=ON -DBUILD_QT:BOOL=ON
+  
+script:
+    - make
+    - cd CerializerTests
+    - ./CerializerTests

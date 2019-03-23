@@ -16,16 +16,17 @@ if (${BUILD_NLOHMANN})
 list(APPEND SourceFiles ${CMAKE_CURRENT_SOURCE_DIR}/NlohmannJsonTests.cpp)
 endif(${BUILD_NLOHMANN})
 
-list(APPEND includePath "${PROJECT_SOURCE_DIR}" "${PROJECT_SOURCE_DIR}\\thirdparty\\rapidjson\\include" "${PROJECT_SOURCE_DIR}\\thirdparty\\json\\include")
-
 add_executable(CerializerTests ${SourceFiles})
 
-target_include_directories(CerializerTests PUBLIC
-  "$<BUILD_INTERFACE:${includePath}>"
+target_include_directories(
+    CerializerTests PUBLIC
+    "${PROJECT_SOURCE_DIR}"
+    "${PROJECT_SOURCE_DIR}/thirdparty/rapidjson/include"
+    "${PROJECT_SOURCE_DIR}/thirdparty/json/include"
 )
 
 if (${BUILD_CPP_REST})
-find_package(cpprestsdk REQUIRED)
+find_package(cpprestsdk REQUIRED NAMES cpprestsdk cpprest)
 target_link_libraries(CerializerTests PRIVATE cpprestsdk::cpprest)
 endif (${BUILD_CPP_REST})
 

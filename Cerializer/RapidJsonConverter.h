@@ -226,6 +226,18 @@ struct RapidJsonConverter
     }
 
     template <class T>
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const short& val)
+    {
+        writer.Int(val);
+    }
+
+    template <class T>
+    static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const unsigned short& val)
+    {
+        writer.Uint(val);
+    }
+
+    template <class T>
     static void fromType(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer, const int& val)
     {
         writer.Int(val);

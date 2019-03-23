@@ -1,8 +1,8 @@
 #pragma once
 
-#include <QtCore/qjsonobject.h>
-#include <QtCore/qjsonarray.h>
-#include <QtCore/qjsonvalue.h>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
 
 #include <set>
 #include <vector>
@@ -239,6 +239,18 @@ struct QJsonConverter
     static QJsonValue fromType(const Cerial::QJsonObj<T>& val)
     {
         return val.toJson();
+    }
+
+    template <class T>
+    static QJsonValue fromType(const short& val)
+    {
+        return  QJsonValue(val);
+    }
+
+    template <class T>
+    static QJsonValue fromType(const unsigned short& val)
+    {
+        return QJsonValue(val);
     }
 
     template <class T>
