@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/CathalT/Cerializer.svg?branch=master)](https://travis-ci.com/CathalT/Cerializer)
+
 # What is Cerializer (C++14) ?
 
 Cerializer is a set of headers that help take the pain out of JSON serialization in C++ with the help of compile time 'reflection'.
