@@ -17,18 +17,20 @@ matrix:
       env: 
          - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
 
-#    - os: osx
-#      osx_image: xcode9.4
-
+    - os: osx
+      osx_image: xcode9.4
 
 before_install:
-    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then eval "${MATRIX_EVAL}" && sudo mkdir /usr/lib/x86_64-linux-gnu/cpprestsdk/ && sudo mv ./cmake/cpprest/* /usr/lib/x86_64-linux-gnu/cpprestsdk/; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then eval "${MATRIX_EVAL}" && sudo mkdir /usr/lib/x86_64-linux-gnu/cpprestsdk/ && sudo mv ./cmake/cpprest/* /usr/lib/x86_64-linux-gnu/cpprestsdk/; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install cpprestsdk && brew install qt5 ; fi
  
 before_script:
     - mkdir build
     - cd build
-    - cmake .. -DBUILD_RAPID_JSON:BOOL=ON -DBUILD_CPP_REST:BOOL=ON -DBUILD_NLOHMANN:BOOL=ON -DBUILD_QT:BOOL=ON
-  
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then cmake .. -DBUILD_RAPID_JSON:BOOL=ON -DBUILD_CPP_REST:BOOL=ON -DBUILD_NLOHMANN:BOOL=ON -DBUILD_QT:BOOL=ON -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl -DQt5Core_DIR=/usr/local/opt/qt5/lib/cmake/Qt5Core ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cmake .. -DBUILD_RAPID_JSON:BOOL=ON -DBUILD_CPP_REST:BOOL=ON -DBUILD_NLOHMANN:BOOL=ON -DBUILD_QT:BOOL=ON ; fi
+
 script:
     - make
     - cd CerializerTests
