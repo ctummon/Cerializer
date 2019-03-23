@@ -244,13 +244,13 @@ struct QJsonConverter
     template <class T>
     static QJsonValue fromType(const short& val)
     {
-        return  QJsonValue(val);
+        return  QJsonValue(static_cast<int>(val));
     }
 
     template <class T>
     static QJsonValue fromType(const unsigned short& val)
     {
-        return QJsonValue(val);
+        return QJsonValue(static_cast<int>(val));
     }
 
     template <class T>
@@ -268,7 +268,7 @@ struct QJsonConverter
     template <class T>
     static QJsonValue fromType(const long& val)
     {
-        return QJsonValue(val);
+        return QJsonValue(static_cast<qint64>(val));
     }
 
     template <class T>
@@ -280,13 +280,19 @@ struct QJsonConverter
     template <class T>
     static QJsonValue fromType(const long long& val)
     {
-        return QJsonValue(val);
+        return QJsonValue(static_cast<qint64>(val));
     }
 
     template <class T>
     static QJsonValue fromType(const double& val)
     {
         return QJsonValue(val);
+    }
+
+    template <class T>
+    static QJsonValue fromType(const float& val)
+    {
+        return QJsonValue(static_cast<double>(val));
     }
 
     template <class T>
