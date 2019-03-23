@@ -23,7 +23,7 @@ matrix:
 
 
 before_install:
-    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then eval "${MATRIX_EVAL}"; fi
+    - if [ "$TRAVIS_OS_NAME" = "linux" ]; then eval "${MATRIX_EVAL}" && sudo mkdir /usr/lib/x86_64-linux-gnu/cpprestsdk/ && sudo mv ./cmake/cpprest/* /usr/lib/x86_64-linux-gnu/cpprestsdk/; fi
  
 before_script:
     - sudo find -name cpprestsdkConfig.cmake
