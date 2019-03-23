@@ -2,7 +2,6 @@ language: cpp
 
 matrix:
   include:
-    # works on Precise and Trusty
     - os: linux
       dist: xenial
       sudo: required
@@ -26,8 +25,6 @@ before_install:
     - if [ "$TRAVIS_OS_NAME" = "linux" ]; then eval "${MATRIX_EVAL}" && sudo mkdir /usr/lib/x86_64-linux-gnu/cpprestsdk/ && sudo mv ./cmake/cpprest/* /usr/lib/x86_64-linux-gnu/cpprestsdk/; fi
  
 before_script:
-    - sudo find -name cpprestsdkConfig.cmake
-    - sudo find -name cpprestsdk-config.cmake
     - mkdir build
     - cd build
     - cmake .. -DBUILD_RAPID_JSON:BOOL=ON -DBUILD_CPP_REST:BOOL=ON -DBUILD_NLOHMANN:BOOL=ON -DBUILD_QT:BOOL=ON
