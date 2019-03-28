@@ -21,9 +21,8 @@ In the future I'll have a look at some of the more performant ones and see if I 
 
 Copy the Cerializer folder into your project and include the JsonObj file of your choice.
 
-Currently only tested on VS2017 (Which means C++14, theoretically C++11 should work, need to test on clang/gcc).
+Builds on VS2017, Clang and GCC. C++ 14 is required.
 It will not compile on VS2015.
-Next steps are to get some CI up and running for clang/gcc on Mac/Linux.
 
 ## Example Usage (cpprest):
 
