@@ -143,7 +143,7 @@ struct RapidJsonConverter
     static T toType(const rapidjson::Value& v)
     {
         double returnVal{};
-        if (v.IsDouble())
+        if (v.IsNumber())
         {
             returnVal = v.GetDouble();
         }
@@ -154,7 +154,7 @@ struct RapidJsonConverter
     static T toType(const rapidjson::Value& v)
     {
         float returnVal{};
-        if (v.IsDouble())
+        if (v.IsNumber())
         {
             returnVal = static_cast<float>(v.GetDouble());
         }
