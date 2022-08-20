@@ -53,7 +53,7 @@ target_include_directories(
     "${PROJECT_SOURCE_DIR}"
     "${PROJECT_SOURCE_DIR}/thirdparty/rapidjson/include"
     "${PROJECT_SOURCE_DIR}/thirdparty/nlohmann/json/include"
-    "${PROJECT_SOURCE_DIR}/thirdparty/simdjson/singleheader/include"
+    "${PROJECT_SOURCE_DIR}/thirdparty/simdjson/singleheader/"
 )
 
 if (${BUILD_CPP_REST})
