@@ -8,7 +8,7 @@
 
 #include <utility>
 
-namespace Cerial
+namespace Cerializer
 {
     template <typename T>
     class RapidJsonObj
@@ -29,7 +29,16 @@ namespace Cerial
                 using Type = typename decltype(property)::Type;
 
                 const auto& itr = RapidJsonConverter::getField(data, property.name);
-                if (itr != data.MemberEnd())
+                const bool found = itr != data.MemberEnd();
+
+                if (property.field_check)
+                {
+                    if constexpr(std::is_same_v<Type, bool>)
+                    {
+                        object.*(property.member) = RapidJsonConverter::template toType<Type>(found);
+                    }
+                } 
+                else if (found)
                 {
                     object.*(property.member) = RapidJsonConverter::template toType<Type>(itr->value);
                 }

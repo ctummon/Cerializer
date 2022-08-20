@@ -4,7 +4,7 @@
 #include <QJsonDocument>
 
 namespace QtJsonTests {
-    class Hands : public Cerial::QJsonObj<Hands>
+    class Hands : public Cerializer::QJsonObj<Hands>
     {
     public:
         std::set<int> fingers;
@@ -12,26 +12,24 @@ namespace QtJsonTests {
 
         std::vector<double> knuckles;
 
-        S_PROPERTIES_BEGIN
-            S_PROPERTY(Hands, fingers),
-            S_PROPERTY(Hands, nails),
-            S_PROPERTY(Hands, knuckles)
+        S_PROPERTIES_BEGIN(Hands)
+            S_PROPERTY(fingers),
+            S_PROPERTY(nails),
+            S_PROPERTY(knuckles)
         S_PROPERTIES_END
     };
 
-    class Face : public Cerial::QJsonObj<Face>
+    class Face : public Cerializer::QJsonObj<Face>
     {
     public:
         unsigned int eyes{ 0 };
 
-        S_PROPERTIES_BEGIN
-            S_PROPERTY(Face, eyes)
+        S_PROPERTIES_BEGIN(Face)
+            S_PROPERTY(eyes)
         S_PROPERTIES_END
     };
 
-    class Test : public Cerial::QJsonObj<Face>
-    {};
-    class Person : public Cerial::QJsonObj<Person>
+    class Person : public Cerializer::QJsonObj<Person>
     {
     public:
         std::string name;
@@ -48,18 +46,18 @@ namespace QtJsonTests {
         unsigned int arms{ 0 };
         unsigned long hairs{ 0 };
 
-        S_PROPERTIES_BEGIN
-            S_PROPERTY(Person, name),
-            S_PROPERTY(Person, lastName),
-            S_PROPERTY(Person, hands),
-            S_PROPERTY(Person, face),
-            S_PROPERTY(Person, foot),
-            S_PROPERTY(Person, age),
-            S_PROPERTY(Person, legs),
-            S_PROPERTY(Person, ageInMs),
-            S_PROPERTY(Person, arms),
-            S_PROPERTY(Person, testQStr),
-            S_PROPERTY(Person, hairs)
+        S_PROPERTIES_BEGIN(Person)
+            S_PROPERTY(name),
+            S_PROPERTY(lastName),
+            S_PROPERTY(hands),
+            S_PROPERTY(face),
+            S_PROPERTY(foot),
+            S_PROPERTY(age),
+            S_PROPERTY(legs),
+            S_PROPERTY(ageInMs),
+            S_PROPERTY(arms),
+            S_PROPERTY(testQStr),
+            S_PROPERTY(hairs)
         S_PROPERTIES_END
     };
 

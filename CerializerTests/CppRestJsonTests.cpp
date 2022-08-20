@@ -4,7 +4,7 @@
 #include <cpprest/json.h>
 
 namespace CppRestObjTests {
-    class Hands : public Cerial::CppRestJsonObj<Hands>
+    class Hands : public Cerializer::CppRestJsonObj<Hands>
     {
     public:
         std::set<int> fingers;
@@ -12,24 +12,24 @@ namespace CppRestObjTests {
 
         std::vector<double> knuckles;
 
-        S_PROPERTIES_BEGIN
-            CPPREST_S_PROPERTY(Hands, fingers),
-            CPPREST_S_PROPERTY(Hands, nails),
-            CPPREST_S_PROPERTY(Hands, knuckles)
+        S_PROPERTIES_BEGIN(Hands)
+            CPPREST_S_PROPERTY(fingers),
+            CPPREST_S_PROPERTY(nails),
+            CPPREST_S_PROPERTY(knuckles)
         S_PROPERTIES_END
     };
 
-    class Face : public Cerial::CppRestJsonObj<Face>
+    class Face : public Cerializer::CppRestJsonObj<Face>
     {
     public:
         unsigned int eyes{ 0 };
 
-        S_PROPERTIES_BEGIN
-            CPPREST_S_PROPERTY(Face, eyes)
+        S_PROPERTIES_BEGIN(Face)
+            CPPREST_S_PROPERTY(eyes)
         S_PROPERTIES_END
     };
 
-    class Person : public Cerial::CppRestJsonObj<Person>
+    class Person : public Cerializer::CppRestJsonObj<Person>
     {
     public:
         std::string name;
@@ -45,17 +45,17 @@ namespace CppRestObjTests {
         unsigned int arms{ 0 };
         unsigned long hairs{ 0 };
 
-        S_PROPERTIES_BEGIN
-            CPPREST_S_PROPERTY(Person, name),
-            CPPREST_S_PROPERTY(Person, lastName),
-            CPPREST_S_PROPERTY(Person, hands),
-            CPPREST_S_PROPERTY(Person, face),
-            CPPREST_S_PROPERTY(Person, foot),
-            CPPREST_S_PROPERTY(Person, age),
-            CPPREST_S_PROPERTY(Person, legs),
-            CPPREST_S_PROPERTY(Person, ageInMs),
-            CPPREST_S_PROPERTY(Person, arms),
-            CPPREST_S_PROPERTY(Person, hairs)
+        S_PROPERTIES_BEGIN(Person)
+            CPPREST_S_PROPERTY(name),
+            CPPREST_S_PROPERTY(lastName),
+            CPPREST_S_PROPERTY(hands),
+            CPPREST_S_PROPERTY(face),
+            CPPREST_S_PROPERTY(foot),
+            CPPREST_S_PROPERTY(age),
+            CPPREST_S_PROPERTY(legs),
+            CPPREST_S_PROPERTY(ageInMs),
+            CPPREST_S_PROPERTY(arms),
+            CPPREST_S_PROPERTY(hairs)
        S_PROPERTIES_END
     };
 

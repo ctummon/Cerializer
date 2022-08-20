@@ -3,7 +3,7 @@
 #include "Cerializer/Serializable.h"
 #include "Cerializer/QJsonConverter.h"
 
-namespace Cerial {
+namespace Cerializer {
     template <typename T>
     class QJsonObj : public Serializable::Object<T, QJsonConverter> {
     public:

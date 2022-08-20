@@ -3,7 +3,7 @@
 #include "Serializable.h"
 #include "NlohmannJsonConverter.h"
 
-namespace Cerial {
+namespace Cerializer {
     template <typename T>
     class NlohmannJsonObj : public Serializable::Object<T, NlohmannJsonConverter> {
     public:

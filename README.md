@@ -29,17 +29,17 @@ It will not compile on VS2015.
 ``` C++
 #include "Cerializer\CppRestJsonObj.h"
 
-class Hand : public Cerial::CppRestJsonObj<Hand>
+class Hand : public Cerializer::CppRestJsonObj<Hand>
 {
 public:
     int fingers{ 0 };
     
-   S_PROPERTIES_BEGIN
-        CPPREST_S_PROPERTY(Hand, fingers),
+   S_PROPERTIES_BEGIN(Hand)
+        CPPREST_S_PROPERTY(fingers),
    S_PROPERTIES_END
 };
 
-class Person : public Cerial::CppRestJsonObj<Person>
+class Person : public Cerializer::CppRestJsonObj<Person>
 {
 public:
     std::string name;
@@ -47,11 +47,11 @@ public:
     std::vector<Hand> hands{ 0 };
 
     
-   S_PROPERTIES_BEGIN
+   S_PROPERTIES_BEGIN(Person)
         //Note for other JSON serializers use S_PROPERTY instead, see tests for examples.
-        CPPREST_S_PROPERTY(Person, name),
-        CPPREST_S_PROPERTY(Person, age),
-        CPPREST_S_PROPERTY(Person, hands),
+        CPPREST_S_PROPERTY(name),
+        CPPREST_S_PROPERTY(age),
+        CPPREST_S_PROPERTY(hands),
    S_PROPERTIES_END
 };
 
@@ -61,17 +61,17 @@ public:
 ``` C++
 #include "Cerializer\RapidJsonObj.h"
 
-class Hand : public Cerial::RapidJsonObj<Hand>
+class Hand : public Cerializer::RapidJsonObj<Hand>
 {
 public:
     int fingers{ 0 };
     
-   S_PROPERTIES_BEGIN
-       S_PROPERTY(Hand, fingers),
+   S_PROPERTIES_BEGIN(Hand)
+       S_PROPERTY(fingers),
    S_PROPERTIES_END
 };
 
-class Person : public Cerial::RapidJsonObj<Person>
+class Person : public Cerializer::RapidJsonObj<Person>
 {
 public:
     std::string name;
@@ -79,10 +79,10 @@ public:
     std::vector<Hand> hands{ 0 };
 
     
-   S_PROPERTIES_BEGIN
-        S_PROPERTY(Person, name),
-        S_PROPERTY(Person, age),
-        S_PROPERTY(Person, hands),
+   S_PROPERTIES_BEGIN(Person)
+        S_PROPERTY(name),
+        S_PROPERTY(age),
+        S_PROPERTY(hands),
    S_PROPERTIES_END
 };
 

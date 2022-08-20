@@ -3,7 +3,7 @@
 #include "Cerializer/Serializable.h"
 #include "Cerializer/CppRestJsonConverter.h"
 
-namespace Cerial {
+namespace Cerializer {
     template <typename T>
     class CppRestJsonObj : public Serializable::Object<T, CppRestJsonConverter> {
     public:

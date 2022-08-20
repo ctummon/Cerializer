@@ -1,35 +1,42 @@
 #include "catch.hpp"
 
+#include "Utils/TestUtils.h"
+
 #include "Cerializer/RapidJsonObj.h"
+
 #include <rapidjson/document.h>
 
 namespace RapidJsonTests {
-    class Hands : public Cerial::RapidJsonObj<Hands>
+    class Hands : public Cerializer::RapidJsonObj<Hands>
     {
     public:
         std::set<int> fingers;
         float nails{ 0 };
+        bool hasFingers{false};
 
         std::vector<double> knuckles;
 
-        S_PROPERTIES_BEGIN
-            S_PROPERTY(Hands, fingers),
-            S_PROPERTY(Hands, nails),
-            S_PROPERTY(Hands, knuckles)
+        //typedef std::string StringVal;
+
+        S_PROPERTIES_BEGIN(Hands)
+            S_PROPERTY(fingers),
+            S_FIELD_CHECK(fingers),
+            S_PROPERTY(nails),
+            S_PROPERTY(knuckles)
         S_PROPERTIES_END
     };
 
-    class Face : public Cerial::RapidJsonObj<Face>
+    class Face : public Cerializer::RapidJsonObj<Face>
     {
     public:
         unsigned int eyes{ 0 };
 
-        S_PROPERTIES_BEGIN
-            S_PROPERTY(Face, eyes)
+        S_PROPERTIES_BEGIN(Face)
+            S_PROPERTY(eyes)
         S_PROPERTIES_END
     };
 
-    class Person : public Cerial::RapidJsonObj<Person>
+    class Person : public Cerializer::RapidJsonObj<Person>
     {
     public:
         std::string name;
@@ -45,17 +52,17 @@ namespace RapidJsonTests {
         unsigned int arms{ 0 };
         unsigned long hairs{ 0 };
 
-        S_PROPERTIES_BEGIN
-            S_PROPERTY(Person, name),
-            S_PROPERTY(Person, lastName),
-            S_PROPERTY(Person, hands),
-            S_PROPERTY(Person, face),
-            S_PROPERTY(Person, foot),
-            S_PROPERTY(Person, age),
-            S_PROPERTY(Person, legs),
-            S_PROPERTY(Person, ageInMs),
-            S_PROPERTY(Person, arms),
-            S_PROPERTY(Person, hairs)
+        S_PROPERTIES_BEGIN(Person)
+            S_PROPERTY(name),
+            S_PROPERTY(lastName),
+            S_PROPERTY(hands),
+            S_PROPERTY(face),
+            S_PROPERTY(foot),
+            S_PROPERTY(age),
+            S_PROPERTY(legs),
+            S_PROPERTY(ageInMs),
+            S_PROPERTY(arms),
+            S_PROPERTY(hairs)
         S_PROPERTIES_END
     };
 
@@ -95,5 +102,34 @@ namespace RapidJsonTests {
         REQUIRE(bob.hands[2].nails == bobsClone.hands[2].nails);
         REQUIRE(bob.lastName == bobsClone.lastName);
         REQUIRE(bob.name == bobsClone.name);
+    }
+
+ 
+    class TestFieldCheck : public Cerializer::RapidJsonObj<TestFieldCheck>
+    {
+    public:
+        bool Name{};
+        bool Age{};
+        bool HeightInMeters{};
+        bool Surname{};
+
+        S_PROPERTIES_BEGIN(TestFieldCheck)
+            S_FIELD_CHECK(Name),
+            S_FIELD_CHECK(Age),
+            S_FIELD_CHECK(HeightInMeters),
+            S_FIELD_CHECK(Surname)
+        S_PROPERTIES_END
+    };   
+
+    TEST_CASE("RapidJson field exists check", "[RapidJsonTests]")
+    {
+        rapidjson::Document jsonDoc;
+        jsonDoc.Parse(Cerializer::getTestJson().c_str());
+        const auto testFields = TestFieldCheck::fromJson(jsonDoc);
+
+        REQUIRE(testFields.Name);
+        REQUIRE(testFields.Age);
+        REQUIRE(testFields.HeightInMeters);
+        REQUIRE_FALSE(testFields.Surname);
     }
 }

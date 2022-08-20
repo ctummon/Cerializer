@@ -4,7 +4,9 @@ project (CerializerTests)
 
 set (CerializerTests_VERSION_MAJOR 0)
 set (CerializerTests_VERSION_MINOR 1)
-set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD 17)
+
+add_compile_definitions(_SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING)
 
 set (BUILD_CPP_REST   OFF CACHE BOOL "")
 set (BUILD_QT         OFF CACHE BOOL "")

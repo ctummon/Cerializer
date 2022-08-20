@@ -4,6 +4,11 @@
 
 #include <utility>
 
+template<class Lambda, int=(Lambda{}(), 0)>
+constexpr bool is_constexpr(Lambda) { return true; }
+constexpr bool is_constexpr(...) { return false; }
+
+namespace Cerializer{
 namespace Serializable {
 
     template <typename T, typename Converter>
@@ -25,9 +30,12 @@ namespace Serializable {
                 const auto& itr = Converter::getField(data, property.name);
                 const bool found = itr != Converter::endItr(data);
 
-                if (property.field_check)
+                if (constexpr(is_constexpr([&property]{ property.field_check; })))
                 {
-                    object.*(property.member) = found;
+                    if(std::is_same_v<decltype(object.*(property.member)), decltype(found)>)
+                    {
+                        object.*(property.member) = Converter::template toType<Type>(found);
+                    }
                 }
                 else if (found)
                 {
@@ -56,4 +64,5 @@ namespace Serializable {
             return data;
         }
     };
-}
+} //namespace Serializable
+} //namespace Cerializer

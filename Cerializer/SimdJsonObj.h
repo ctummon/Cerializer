@@ -1,92 +1,82 @@
 #pragma once
 
-/*#include "CerialUtils.h"
-#include "RapidJsonConverter.h"
+#include "SIMDJsonConverter.h"
+#include <simdjson.h>
 
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/prettywriter.h>
-
-#include <utility>
-
-namespace Cerial
+namespace Cerializer
 {
     template <typename T>
-    class RapidJsonObj
+    class SIMDJsonObj
     {
     public:
-        virtual ~RapidJsonObj<T>() = default;
+        virtual ~SIMDJsonObj<T>() = default;
 
-        static T fromJson(const rapidjson::Document& data)
+        static T fromJson(simdjson::ondemand::parser& parser, const std::string_view data)
         {
             T object;
+
+            auto json = simdjson::padded_string(data);
+            simdjson::ondemand::document doc = parser.iterate(json); // position a pointer at the beginning of the JSON data
+
+            auto t_el = doc["test"];
 
             constexpr auto sizeOfProperties = std::tuple_size<decltype(object.properties())>::value;
 
             for_sequence(std::make_index_sequence<sizeOfProperties>{}, [&](auto i)
-            {
-                constexpr auto property = std::get<i>(object.properties());
-
-                using Type = typename decltype(property)::Type;
-
-                const auto& itr = RapidJsonConverter::getField(data, property.name);
-                if (itr != data.MemberEnd())
                 {
-                    object.*(property.member) = RapidJsonConverter::template toType<Type>(itr->value);
-                }
-            });
+                    constexpr auto property = std::get<i>(object.properties());
+
+                    using Type = typename decltype(property)::Type;
+
+                    const auto& val = SIMDJsonConverter::getField(doc, property.name);
+                    //if (itr != data.MemberEnd())
+                    //{
+                    //    object.*(property.member) = SIMDJsonConverter::template toType<Type>(val);
+                    //}
+                });
 
             return object;
         }
 
-        static T fromJson(const rapidjson::GenericObject<true, rapidjson::Value> & data)
+        static T fromJson(const std::string_view data)
         {
-            T object;
-
-            constexpr auto sizeOfProperties = std::tuple_size<decltype(object.properties())>::value;
-
-            for_sequence(std::make_index_sequence<sizeOfProperties>{}, [&](auto i)
-            {
-                constexpr auto property = std::get<i>(object.properties());
-
-                using Type = typename decltype(property)::Type;
-
-                const auto& itr = RapidJsonConverter::getField(data, property.name);
-                if (itr != data.MemberEnd())
-                {
-                    object.*(property.member) = RapidJsonConverter::template toType<Type>(itr->value);
-                }
-            });
-
-            return object;
+            std::unique<simdjson::ondemand::parser> parser = std::make_unique<simdjson::ondemand::parser>();
+            return fromJson<T>(*parser, data);
         }
 
-        std::string toJsonStr() const
+        std::string_view toJsonStr() const
         {
             auto derived = static_cast<const T&>(*this);
 
-            rapidjson::StringBuffer sb;
-            rapidjson::PrettyWriter<rapidjson::StringBuffer> baseWriter(sb);
+            auto json = "{}"_padded;
+            simdjson::ondemand::parser parser;
+            simdjson::ondemand::document doc = parser.iterate(json);
 
+            
             constexpr auto sizeOfProperties = std::tuple_size<decltype(derived.properties())>::value;
 
-            baseWriter.StartObject();
+           //baseWriter.StartObject();
 
             for_sequence(std::make_index_sequence<sizeOfProperties>{}, [&](auto i)
-            {
-                constexpr auto property = std::get<i>(derived.properties());
+                {
+                    constexpr auto property = std::get<i>(derived.properties());
 
-                using Type = typename decltype(property)::Type;
+                    using Type = typename decltype(property)::Type;
 
-                baseWriter.Key(property.name);
-                RapidJsonConverter::template fromType<Type>(baseWriter, derived.*(property.member));
-            });
+                    //baseWriter.Key(property.name);
+                    SIMDJsonConverter::template fromType<Type>(doc, derived.*(property.member));
+                });
 
-            baseWriter.EndObject();
-
-            return sb.GetString();
+            //baseWriter.EndObject();
+           
+            auto r_val = simdjson::to_json_string(doc);
+            if (r_val.error()) {
+                return "";
+            }
+            return r_val.value();
         }
 
-        void appendJsonStr(rapidjson::PrettyWriter<rapidjson::StringBuffer>& writer) const
+        void writeToDoc(simdjson::ondemand::document& doc) const
         {
             auto derived = static_cast<const T&>(*this);
             constexpr auto sizeOfProperties = std::tuple_size<decltype(derived.properties())>::value;
@@ -94,21 +84,20 @@ namespace Cerial
             writer.StartObject();
 
             for_sequence(std::make_index_sequence<sizeOfProperties>{}, [&](auto i)
-            {
-                constexpr auto property = std::get<i>(derived.properties());
+                {
+                    constexpr auto property = std::get<i>(derived.properties());
 
-                using Type = typename decltype(property)::Type;
+                    using Type = typename decltype(property)::Type;
 
-                writer.Key(property.name);
-                RapidJsonConverter::template fromType<Type>(writer, derived.*(property.member));
-            });
+                    writer.Key(property.name);
+                    SIMDJsonConverter::template fromType<Type>(writer, derived.*(property.member));
+                });
 
             writer.EndObject();
         }
 
     private:
-        RapidJsonObj() = default;
+        SIMDJsonObj() = default;
         friend T;
     };
 }
-*/

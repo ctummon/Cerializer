@@ -41,7 +41,9 @@ list(APPEND Headers
     ${CMAKE_CURRENT_SOURCE_DIR}/SimdJsonObj.h 
     ${CMAKE_CURRENT_SOURCE_DIR}/SimdJsonConverter.h)
 
-list(APPEND SourceFiles ${CMAKE_CURRENT_SOURCE_DIR}/SimdJsonTests.cpp)
+list(APPEND SourceFiles 
+    ${CMAKE_CURRENT_SOURCE_DIR}/SimdJsonTests.cpp
+    ${PROJECT_SOURCE_DIR}/thirdparty/simdjson/singleheader/simdjson.cpp)
 endif(${BUILD_SIMD_JSON})
 
 add_executable(CerializerTests ${SourceFiles})
@@ -51,7 +53,7 @@ target_include_directories(
     "${PROJECT_SOURCE_DIR}"
     "${PROJECT_SOURCE_DIR}/thirdparty/rapidjson/include"
     "${PROJECT_SOURCE_DIR}/thirdparty/nlohmann/json/include"
-    "${PROJECT_SOURCE_DIR}/thirdparty/simdjson/include"
+    "${PROJECT_SOURCE_DIR}/thirdparty/simdjson/singleheader/include"
 )
 
 if (${BUILD_CPP_REST})

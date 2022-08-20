@@ -5,6 +5,8 @@
 #include <string>
 #include <tuple>
 
+namespace Cerializer {
+ 
 template <typename T, T... S, typename F>
 constexpr void for_sequence(std::integer_sequence<T, S...>, F&& f) {
     using unpack_t = int[];
@@ -33,7 +35,10 @@ constexpr auto property(T Class::*member, IdentiferType const* name, bool field_
     return PropertyImpl<Class, T, IdentiferType>{member, name, field_check};
 }
 
-#define S_PROPERTIES_BEGIN \
+#define S_PROPERTIES_BEGIN(ClassName) \
+private: \
+using HiddenClassNameAlias = ClassName; \
+public: \
 constexpr static auto properties() { \
 return std::make_tuple( \
 
@@ -41,25 +46,26 @@ return std::make_tuple( \
 ); \
 } \
 
-#define S_PROPERTY(ClassName, Name)  \
-property(&ClassName::Name, #Name )
+#define S_PROPERTY(Var)  \
+property(&HiddenClassNameAlias::Var, #Var )
 
-#define S_FIELD_CHECK(ClassName, Name)  \
-property(&ClassName::Name, #Name, true )
+#define S_FIELD_CHECK(Var)  \
+property(&HiddenClassNameAlias::Var, #Var, true )
 
 #ifdef _WIN32
-#define CPPREST_S_PROPERTY(ClassName, Name)  \
-property(&ClassName::Name, L#Name)
+#define CPPREST_S_PROPERTY(Var)  \
+property(&HiddenClassNameAlias::Var, L#Var)
 
-#define CPPREST_FIELD_CHECK(ClassName, Name)  \
-property(&ClassName::Name, L#Name, true )
+#define CPPREST_FIELD_CHECK(Var)  \
+property(&HiddenClassNameAlias::Var, L#Var, true )
 #else
-#define CPPREST_S_PROPERTY(ClassName, Name)  \
-property(&ClassName::Name, #Name)
+#define CPPREST_S_PROPERTY(Var)  \
+property(&HiddenClassNameAlias::Var, #Var)
 
-#define CPPREST_FIELD_CHECK(ClassName, Name)  \
-property(&ClassName::Name, L#Name, true )
+#define CPPREST_FIELD_CHECK(Name)  \
+property(&HiddenClassNameAlias::Name, L#Name, true )
 #endif
 
 static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> stringConverter;
- 
+
+} //namespace Cerializer
