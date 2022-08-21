@@ -1,0 +1,10 @@
+BasedOnStyle: Mozilla
+Language: Cpp
+TabWidth: 4
+IndentWidth: 4
+MacroBlockBegin: "^S_PROPERTIES_BEGIN$"
+MacroBlockEnd: "^S_PROPERTIES_END$"
+AlignConsecutiveDeclarations: None
+StatementMacros: [CPPREST_S_PROPERTY,S_PROPERTY,S_FIELD_CHECK,CPPREST_FIELD_CHECK]
+AlignAfterOpenBracket: DontAlign
+#BreakConstructorInitializers: AfterColon

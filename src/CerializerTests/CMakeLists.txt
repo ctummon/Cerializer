@@ -2,7 +2,7 @@ set(Headers ${CMAKE_CURRENT_SOURCE_DIR}/Serializable.h)
 
 list(APPEND Headers ${CMAKE_CURRENT_SOURCE_DIR}/CerialUtils.h)
 
-set(SourceFiles ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${CMAKE_CURRENT_SOURCE_DIR}/catch.hpp)
+set(SourceFiles ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
 
 if (${BUILD_CPP_REST})
 list(APPEND Headers 
@@ -50,7 +50,8 @@ add_executable(CerializerTests ${SourceFiles})
 
 target_include_directories(
     CerializerTests PUBLIC
-    "${PROJECT_SOURCE_DIR}"
+    "${PROJECT_SOURCE_DIR}/src"
+    "${PROJECT_SOURCE_DIR}/thirdparty/"
     "${PROJECT_SOURCE_DIR}/thirdparty/rapidjson/include"
     "${PROJECT_SOURCE_DIR}/thirdparty/nlohmann/json/include"
     "${PROJECT_SOURCE_DIR}/thirdparty/simdjson/singleheader/"

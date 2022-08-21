@@ -34,7 +34,7 @@ class Hand : public Cerializer::CppRestJsonObj<Hand>
 public:
     int fingers{ 0 };
     
-   S_PROPERTIES_BEGIN(Hand)
+   S_PROPERTIES_BEGIN
         CPPREST_S_PROPERTY(fingers),
    S_PROPERTIES_END
 };
@@ -47,7 +47,7 @@ public:
     std::vector<Hand> hands{ 0 };
 
     
-   S_PROPERTIES_BEGIN(Person)
+   S_PROPERTIES_BEGIN
         //Note for other JSON serializers use S_PROPERTY instead, see tests for examples.
         CPPREST_S_PROPERTY(name),
         CPPREST_S_PROPERTY(age),
@@ -66,7 +66,7 @@ class Hand : public Cerializer::RapidJsonObj<Hand>
 public:
     int fingers{ 0 };
     
-   S_PROPERTIES_BEGIN(Hand)
+   S_PROPERTIES_BEGIN
        S_PROPERTY(fingers),
    S_PROPERTIES_END
 };
@@ -79,7 +79,7 @@ public:
     std::vector<Hand> hands{ 0 };
 
     
-   S_PROPERTIES_BEGIN(Person)
+   S_PROPERTIES_BEGIN
         S_PROPERTY(name),
         S_PROPERTY(age),
         S_PROPERTY(hands),

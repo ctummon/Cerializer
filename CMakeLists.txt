@@ -14,6 +14,6 @@ set (BUILD_RAPID_JSON ON  CACHE BOOL "")
 set (BUILD_NLOHMANN   ON  CACHE BOOL "")
 set (BUILD_SIMD_JSON  ON  CACHE BOOL "")
 
-add_subdirectory(CerializerTests)
+add_subdirectory(src/CerializerTests)
 
 
