@@ -58,7 +58,7 @@ class Person : public Cerializer::NlohmannJsonObj<Person>
         , S_PROPERTY(ageInMs)
         , S_PROPERTY(arms)
         , S_PROPERTY(hairs)
-        , S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") //Json object name
+        , S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") // Json object name
     S_PROPERTIES_END
 };
 
@@ -109,7 +109,8 @@ TEST_CASE("NlohmannJson Serialization", "[NlohmannJsonTests]")
     REQUIRE(bob.name == bobsClone.name);
 }
 
-class FieldsExistTestCase : public Cerializer::NlohmannJsonObj<FieldsExistTestCase>
+class FieldsExistTestCase
+  : public Cerializer::NlohmannJsonObj<FieldsExistTestCase>
 {
   public:
     std::optional<std::string> Name;
@@ -129,7 +130,8 @@ TEST_CASE_METHOD(FieldsExistTestCase,
   "NlohmannJson field exists check",
   "[NlohmannJsonTests]")
 {
-    nlohmann::json jsonDoc = nlohmann::json::parse(Cerializer::getTestJson<std::string>());
+    nlohmann::json jsonDoc =
+      nlohmann::json::parse(Cerializer::getTestJson<std::string>());
     const auto testFields = fromJson(jsonDoc);
 
     REQUIRE(testFields.Name);

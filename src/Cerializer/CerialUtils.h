@@ -30,11 +30,13 @@ return std::make_tuple(
 
 #ifdef _WIN32
 #define CPPREST_S_PROPERTY(Var) property(&DerivedClassAlias::Var, L#Var)
-#define CPPREST_S_PROPERTY_ALIAS(Var, Alias) property(&DerivedClassAlias::Var, Alias)
+#define CPPREST_S_PROPERTY_ALIAS(Var, Alias)                                   \
+    property(&DerivedClassAlias::Var, Alias)
 
 #else
 #define CPPREST_S_PROPERTY(Var) property(&DerivedClassAlias::Var, #Var)
-#define CPPREST_S_PROPERTY_ALIAS(Var, Alias) property(&DerivedClassAlias::Var, Alias)
+#define CPPREST_S_PROPERTY_ALIAS(Var, Alias)                                   \
+    property(&DerivedClassAlias::Var, Alias)
 #endif
 
 static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>

@@ -61,7 +61,7 @@ class Person : public Cerializer::QJsonObj<Person>
         , S_PROPERTY(arms)
         , S_PROPERTY(testQStr)
         , S_PROPERTY(hairs)
-        , S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") //Json object name
+        , S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") // Json object name
     S_PROPERTIES_END
 };
 
@@ -134,7 +134,8 @@ TEST_CASE_METHOD(FieldsExistTestCase,
   "QJson field exists check",
   "[QJsonTests]")
 {
-    auto jsonDoc = QJsonDocument::fromJson(Cerializer::getTestJson<std::string>().c_str());
+    auto jsonDoc =
+      QJsonDocument::fromJson(Cerializer::getTestJson<std::string>().c_str());
     const auto testFields = fromJson(jsonDoc);
 
     REQUIRE(testFields.Name);

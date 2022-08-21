@@ -66,9 +66,9 @@ TEST_CASE("CppRestSdk Alias Property Test", "[CppRestTests]")
 {
     Person bob;
     auto p = std::get<10>(bob.getProperties());
-    //need utility str compare 
-    //REQUIRE(strcmp(p.name, "fakeName") == 0);
-    //REQUIRE(&p.mFakeNameAlias == p.member);
+    // need utility str compare
+    // REQUIRE(strcmp(p.name, "fakeName") == 0);
+    // REQUIRE(&p.mFakeNameAlias == p.member);
 }
 
 TEST_CASE("CppRestSdk Json Serialization", "[CppRestTests]")
@@ -107,7 +107,8 @@ TEST_CASE("CppRestSdk Json Serialization", "[CppRestTests]")
     REQUIRE(bob.name == bobsClone.name);
 }
 
-class FieldsExistTestCase : public Cerializer::CppRestJsonObj<FieldsExistTestCase>
+class FieldsExistTestCase
+  : public Cerializer::CppRestJsonObj<FieldsExistTestCase>
 {
   public:
     std::optional<std::string> Name;
@@ -127,7 +128,8 @@ TEST_CASE_METHOD(FieldsExistTestCase,
   "CppRest field exists check",
   "[CppRestTests]")
 {
-    web::json::value bobJsonClone = web::json::value::parse(Cerializer::getTestJson<utility::string_t>());
+    web::json::value bobJsonClone =
+      web::json::value::parse(Cerializer::getTestJson<utility::string_t>());
     const auto testFields = fromJson(jsonDoc);
 
     REQUIRE(testFields.Name);

@@ -5,12 +5,11 @@
 
 namespace Cerializer {
 template<typename StringType>
-StringType getTestJson()
+StringType
+getTestJson()
 {
     StringType content;
-    std::ifstream file(
-      TestData::TestDataFilePath,
-      std::ios::binary);
+    std::ifstream file(TestData::TestDataFilePath, std::ios::binary);
     if (file.is_open()) {
         content.assign((std::istreambuf_iterator<StringType::value_type>(file)),
           (std::istreambuf_iterator<StringType::value_type>()));

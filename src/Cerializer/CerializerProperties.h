@@ -24,8 +24,7 @@ class Properties
     };
 
     template<typename DClass = DerivedClass, typename T, typename IdentiferType>
-    static constexpr auto property(T DClass::*member,
-      IdentiferType const* name)
+    static constexpr auto property(T DClass::*member, IdentiferType const* name)
     {
         return PropertyImpl<T, IdentiferType>{ member, name };
     }

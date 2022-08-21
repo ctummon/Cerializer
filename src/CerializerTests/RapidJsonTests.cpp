@@ -62,7 +62,7 @@ class Person : public Cerializer::RapidJsonObj<Person>
         , S_PROPERTY(ageInMs)
         , S_PROPERTY(arms)
         , S_PROPERTY(hairs)
-        , S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") //Json object name
+        , S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") // Json object name
     S_PROPERTIES_END
 };
 
