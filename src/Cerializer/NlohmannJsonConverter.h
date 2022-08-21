@@ -1,11 +1,13 @@
 #pragma once
 
+#include "CerialUtils.h"
+
 #include <nlohmann/json.hpp>
+
+#include <optional>
 #include <set>
 #include <type_traits>
 #include <vector>
-
-#include "CerialUtils.h"
 
 namespace Cerializer {
 template<typename>
@@ -34,12 +36,13 @@ struct NlohmannJsonConverter
         data[fieldName] = memberVar;
     }
 
-    template<typename A,
-      typename B,
-      typename std::enable_if<std::is_same_v<A, B>>::type* = nullptr>
-    static A toType(const B& data)
+    template<class T,
+      typename std::enable_if<
+        std::is_same<std::optional<typename T::value_type>, T>::value>::type* =
+        nullptr>
+    static T toType(const JsonObj::value_type& data)
     {
-        return data;
+        return std::make_optional<T::value_type>(toType<T::value_type>(data));
     }
 
     template<class T,

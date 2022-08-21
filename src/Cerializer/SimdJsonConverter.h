@@ -2,6 +2,7 @@
 
 #include <simdjson.h>
 
+#include <optional>
 #include <set>
 #include <type_traits>
 #include <vector>
@@ -10,9 +11,9 @@
 
 namespace Cerializer {
 template<typename>
-class SIMDJsonObj;
+class SimdJsonObj;
 
-struct SIMDJsonConverter
+struct SimdJsonConverter
 {
     // using JsonObj = simdjson::ParsedJson;
     using JsonVal =
@@ -25,17 +26,18 @@ struct SIMDJsonConverter
     }
 
     // De-serialize
-    template<typename A,
-      typename B,
-      typename std::enable_if<std::is_same_v<A, B>>::type* = nullptr>
-    static A toType(const B& data)
+    template<class T,
+      typename std::enable_if<
+        std::is_same<std::optional<typename T::value_type>, T>::value>::type* =
+        nullptr>
+    T toType(const JsonVal& val)
     {
-        return data;
+        return std::make_optional<T::value_type>(toType<T::value_type>(v));
     }
 
     template<class T,
       typename std::enable_if<
-        std::is_base_of<Cerializer::SIMDJsonObj<T>, T>::value>::type* = nullptr>
+        std::is_base_of<Cerializer::SimdJsonObj<T>, T>::value>::type* = nullptr>
     static T toType(const JsonVal& val)
     {
         return T{}; // T::fromJson(val.get_object());
@@ -241,14 +243,14 @@ struct SIMDJsonConverter
     // Serialize
     template<class T>
     static void fromType(simdjson::ondemand::document& doc,
-      Cerializer::SIMDJsonObj<T>& val)
+      Cerializer::SimdJsonObj<T>& val)
     {
         // val.appendJsonStr(writer);
     }
 
     template<class T>
     static void fromType(simdjson::ondemand::document& doc,
-      const Cerializer::SIMDJsonObj<T>& val)
+      const Cerializer::SimdJsonObj<T>& val)
     {
         // val.appendJsonStr(writer);
     }

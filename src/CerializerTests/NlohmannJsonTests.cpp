@@ -1,4 +1,7 @@
 #include "Cerializer/NlohmannJsonObj.h"
+
+#include "Utils/TestUtils.h"
+
 #include "catch.hpp"
 
 namespace NlohmannJsonTests {
@@ -33,6 +36,7 @@ class Person : public Cerializer::NlohmannJsonObj<Person>
     std::string name;
     std::wstring lastName;
     std::vector<Hands> hands;
+    std::string mFakeNameAlias;
 
     Face face;
 
@@ -54,12 +58,24 @@ class Person : public Cerializer::NlohmannJsonObj<Person>
         , S_PROPERTY(ageInMs)
         , S_PROPERTY(arms)
         , S_PROPERTY(hairs)
+        , S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") //Json object name
     S_PROPERTIES_END
 };
+
+TEST_CASE("NlohmannJson Alias Property Test", "[NlohmannJsonTests]")
+{
+    Person bob;
+    auto p = std::get<10>(bob.getProperties());
+    REQUIRE(strcmp(p.name, "fakeName") == 0);
+    REQUIRE(&bob.mFakeNameAlias == &(bob.*(p.member)));
+}
 
 TEST_CASE("NlohmannJson Serialization", "[NlohmannJsonTests]")
 {
     Person bob;
+
+    auto p = std::get<10>(bob.getProperties());
+    REQUIRE(strcmp(p.name, "fakeName") == 0);
 
     bob.age = 14;
     bob.ageInMs = 124011515;
@@ -92,4 +108,34 @@ TEST_CASE("NlohmannJson Serialization", "[NlohmannJsonTests]")
     REQUIRE(bob.lastName == bobsClone.lastName);
     REQUIRE(bob.name == bobsClone.name);
 }
+
+class FieldsExistTestCase : public Cerializer::NlohmannJsonObj<FieldsExistTestCase>
+{
+  public:
+    std::optional<std::string> Name;
+    std::optional<int> Age{};
+    std::optional<double> HeightInMeters{};
+    std::optional<std::string> Surname;
+
+    S_PROPERTIES_BEGIN
+        S_PROPERTY(Name)
+        , S_PROPERTY(Age)
+        , S_PROPERTY(HeightInMeters)
+        , S_PROPERTY(Surname)
+    S_PROPERTIES_END
+};
+
+TEST_CASE_METHOD(FieldsExistTestCase,
+  "NlohmannJson field exists check",
+  "[NlohmannJsonTests]")
+{
+    nlohmann::json jsonDoc = nlohmann::json::parse(Cerializer::getTestJson<std::string>());
+    const auto testFields = fromJson(jsonDoc);
+
+    REQUIRE(testFields.Name);
+    REQUIRE(testFields.Age);
+    REQUIRE(testFields.HeightInMeters);
+    REQUIRE_FALSE(testFields.Surname);
+}
+
 } // namespace NlohmannJsonTests

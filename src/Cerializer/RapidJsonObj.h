@@ -1,13 +1,13 @@
 #pragma once
 
+#include "CerialUtils.h"
+#include "CerializerProperties.h"
+#include "RapidJsonConverter.h"
+
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/stringbuffer.h>
 
 #include <utility>
-
-#include "CerialUtils.h"
-#include "CerializerProperties.h"
-#include "RapidJsonConverter.h"
 
 namespace Cerializer {
 template<typename DerivedClass>
@@ -31,14 +31,7 @@ class RapidJsonObj : public Properties<DerivedClass>
 
               const auto& itr =
                 RapidJsonConverter::getField(data, property.name);
-              const bool found = itr != data.MemberEnd();
-
-              if (property.field_check) {
-                  if constexpr (std::is_same_v<Type, bool>) {
-                      object.*(property.member) =
-                        RapidJsonConverter::template toType<Type>(found);
-                  }
-              } else if (found) {
+              if (itr != data.MemberEnd()) {
                   object.*(property.member) =
                     RapidJsonConverter::template toType<Type>(itr->value);
               }

@@ -3,6 +3,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+
+#include <optional>
 #include <set>
 #include <type_traits>
 #include <vector>
@@ -34,12 +36,13 @@ struct QJsonConverter
     }
 
     // De-serialize
-    template<typename A,
-      typename B,
-      typename std::enable_if<std::is_same_v<A, B>>::type* = nullptr>
-    static A toType(const B& data)
+    template<class T,
+      typename std::enable_if<
+        std::is_same<std::optional<typename T::value_type>, T>::value>::type* =
+        nullptr>
+    static T toType(const QJsonValue& data)
     {
-        return data;
+        return std::make_optional<T::value_type>(toType<T::value_type>(data));
     }
 
     template<class T,

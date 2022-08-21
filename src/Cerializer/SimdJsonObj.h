@@ -3,14 +3,14 @@
 #include <simdjson.h>
 
 #include "CerializerProperties.h"
-#include "SIMDJsonConverter.h"
+#include "SimdJsonConverter.h"
 
 namespace Cerializer {
 template<typename DerivedClass>
-class SIMDJsonObj : public Properties<DerivedClass>
+class SimdJsonObj : public Properties<DerivedClass>
 {
   public:
-    virtual ~SIMDJsonObj<DerivedClass>() = default;
+    virtual ~SimdJsonObj<DerivedClass>() = default;
 
     static DerivedClass fromJson(simdjson::ondemand::parser& parser,
       const std::string_view data)
@@ -32,10 +32,10 @@ class SIMDJsonObj : public Properties<DerivedClass>
 
               using Type = typename decltype(property)::Type;
 
-              const auto& val = SIMDJsonConverter::getField(doc, property.name);
+              const auto& val = SimdJsonConverter::getField(doc, property.name);
               // if (itr != data.MemberEnd())
               //{
-              //    object.*(property.member) = SIMDJsonConverter::template
+              //    object.*(property.member) = SimdJsonConverter::template
               //    toType<Type>(val);
               //}
           });
@@ -70,7 +70,7 @@ class SIMDJsonObj : public Properties<DerivedClass>
               using Type = typename decltype(property)::Type;
 
               // baseWriter.Key(property.name);
-              SIMDJsonConverter::template fromType<Type>(
+              SimdJsonConverter::template fromType<Type>(
                 doc, derived.*(property.member));
           });
 
@@ -98,7 +98,7 @@ class SIMDJsonObj : public Properties<DerivedClass>
               using Type = typename decltype(property)::Type;
 
               writer.Key(property.name);
-              SIMDJsonConverter::template fromType<Type>(
+              SimdJsonConverter::template fromType<Type>(
                 writer, derived.*(property.member));
           });
 
@@ -106,7 +106,7 @@ class SIMDJsonObj : public Properties<DerivedClass>
     }
 
   private:
-    SIMDJsonObj() = default;
+    SimdJsonObj() = default;
     friend DerivedClass;
 };
 } // namespace Cerializer

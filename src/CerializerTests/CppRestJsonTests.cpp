@@ -1,8 +1,10 @@
-#include <cpprest/json.h>
 
 #include "Cerializer/CppRestJsonObj.h"
+#include "Utils/TestUtils.h"
+
 #include "catch.hpp"
 
+#include <cpprest/json.h>
 namespace CppRestObjTests {
 class Hands : public Cerializer::CppRestJsonObj<Hands>
 {
@@ -35,7 +37,7 @@ class Person : public Cerializer::CppRestJsonObj<Person>
     std::string name;
     std::wstring lastName;
     std::vector<Hands> hands;
-
+    std::string mFakeNameAlias;
     Face face;
 
     short foot{ 0 };
@@ -56,8 +58,18 @@ class Person : public Cerializer::CppRestJsonObj<Person>
         , CPPREST_S_PROPERTY(ageInMs)
         , CPPREST_S_PROPERTY(arms)
         , CPPREST_S_PROPERTY(hairs)
+        , CPPREST_S_PROPERTY_ALIAS(mFakeNameAlias, U("fakeName"))
     S_PROPERTIES_END
 };
+
+TEST_CASE("CppRestSdk Alias Property Test", "[CppRestTests]")
+{
+    Person bob;
+    auto p = std::get<10>(bob.getProperties());
+    //need utility str compare 
+    //REQUIRE(strcmp(p.name, "fakeName") == 0);
+    //REQUIRE(&p.mFakeNameAlias == p.member);
+}
 
 TEST_CASE("CppRestSdk Json Serialization", "[CppRestTests]")
 {
@@ -94,4 +106,34 @@ TEST_CASE("CppRestSdk Json Serialization", "[CppRestTests]")
     REQUIRE(bob.lastName == bobsClone.lastName);
     REQUIRE(bob.name == bobsClone.name);
 }
+
+class FieldsExistTestCase : public Cerializer::CppRestJsonObj<FieldsExistTestCase>
+{
+  public:
+    std::optional<std::string> Name;
+    std::optional<int> Age{};
+    std::optional<double> HeightInMeters{};
+    std::optional<std::string> Surname;
+
+    S_PROPERTIES_BEGIN
+        S_PROPERTY(Name)
+        , S_PROPERTY(Age)
+        , S_PROPERTY(HeightInMeters)
+        , S_PROPERTY(Surname)
+    S_PROPERTIES_END
+};
+
+TEST_CASE_METHOD(FieldsExistTestCase,
+  "CppRest field exists check",
+  "[CppRestTests]")
+{
+    web::json::value bobJsonClone = web::json::value::parse(Cerializer::getTestJson<utility::string_t>());
+    const auto testFields = fromJson(jsonDoc);
+
+    REQUIRE(testFields.Name);
+    REQUIRE(testFields.Age);
+    REQUIRE(testFields.HeightInMeters);
+    REQUIRE_FALSE(testFields.Surname);
+}
+
 } // namespace CppRestObjTests

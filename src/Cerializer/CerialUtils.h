@@ -26,18 +26,15 @@ return std::make_tuple(
     }
 
 #define S_PROPERTY(Var) property(&DerivedClassAlias::Var, #Var)
-
-#define S_FIELD_CHECK(Var) property(&DerivedClassAlias::Var, #Var, true)
+#define S_PROPERTY_ALIAS(Var, Alias) property(&DerivedClassAlias::Var, Alias)
 
 #ifdef _WIN32
 #define CPPREST_S_PROPERTY(Var) property(&DerivedClassAlias::Var, L#Var)
+#define CPPREST_S_PROPERTY_ALIAS(Var, Alias) property(&DerivedClassAlias::Var, Alias)
 
-#define CPPREST_FIELD_CHECK(Var) property(&DerivedClassAlias::Var, L#Var, true)
 #else
 #define CPPREST_S_PROPERTY(Var) property(&DerivedClassAlias::Var, #Var)
-
-#define CPPREST_FIELD_CHECK(Name)                                              \
-    property(&DerivedClassAlias::Name, L#Name, true)
+#define CPPREST_S_PROPERTY_ALIAS(Var, Alias) property(&DerivedClassAlias::Var, Alias)
 #endif
 
 static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>

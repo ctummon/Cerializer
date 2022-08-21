@@ -1,17 +1,19 @@
+#include "TestDataFilePath.h"
+
 #include <fstream>
 #include <string>
 
 namespace Cerializer {
-std::string
-getTestJson()
+template<typename StringType>
+StringType getTestJson()
 {
-    std::string content;
+    StringType content;
     std::ifstream file(
-      "C:/dev/Cerializer/CerializerTests/TestData/TestObject.json",
+      TestData::TestDataFilePath,
       std::ios::binary);
     if (file.is_open()) {
-        content.assign((std::istreambuf_iterator<char>(file)),
-          (std::istreambuf_iterator<char>()));
+        content.assign((std::istreambuf_iterator<StringType::value_type>(file)),
+          (std::istreambuf_iterator<StringType::value_type>()));
     }
     return content;
 }

@@ -1,8 +1,11 @@
-#include <rapidjson/document.h>
+
 
 #include "Cerializer/RapidJsonObj.h"
 #include "Utils/TestUtils.h"
+
 #include "catch.hpp"
+
+#include <rapidjson/document.h>
 
 namespace RapidJsonTests {
 class Hands : public Cerializer::RapidJsonObj<Hands>
@@ -10,13 +13,11 @@ class Hands : public Cerializer::RapidJsonObj<Hands>
   public:
     std::set<int> fingers;
     float nails{ 0 };
-    bool hasFingers{ false };
 
     std::vector<double> knuckles;
 
     S_PROPERTIES_BEGIN
         S_PROPERTY(fingers)
-        , S_FIELD_CHECK(fingers)
         , S_PROPERTY(nails)
         , S_PROPERTY(knuckles)
     S_PROPERTIES_END
@@ -36,8 +37,10 @@ class Person : public Cerializer::RapidJsonObj<Person>
 {
   public:
     std::string name;
+    std::string middleName;
     std::wstring lastName;
     std::vector<Hands> hands;
+    std::string mFakeNameAlias;
 
     Face face;
 
@@ -59,8 +62,17 @@ class Person : public Cerializer::RapidJsonObj<Person>
         , S_PROPERTY(ageInMs)
         , S_PROPERTY(arms)
         , S_PROPERTY(hairs)
+        , S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") //Json object name
     S_PROPERTIES_END
 };
+
+TEST_CASE("RapidJson Alias Property Test", "[RapidJsonTests]")
+{
+    Person bob;
+    auto p = std::get<10>(bob.getProperties());
+    REQUIRE(strcmp(p.name, "fakeName") == 0);
+    REQUIRE(&bob.mFakeNameAlias == &(bob.*(p.member)));
+}
 
 TEST_CASE("RapidJson Serialization", "[RapidJsonTests]")
 {
@@ -100,27 +112,29 @@ TEST_CASE("RapidJson Serialization", "[RapidJsonTests]")
     REQUIRE(bob.name == bobsClone.name);
 }
 
-class TestFieldCheck : public Cerializer::RapidJsonObj<TestFieldCheck>
+class FieldsExistTestCase : public Cerializer::RapidJsonObj<FieldsExistTestCase>
 {
   public:
-    bool Name{};
-    bool Age{};
-    bool HeightInMeters{};
-    bool Surname{};
+    std::optional<std::string> Name;
+    std::optional<int> Age{};
+    std::optional<double> HeightInMeters{};
+    std::optional<std::string> Surname;
 
     S_PROPERTIES_BEGIN
-        S_FIELD_CHECK(Name)
-        , S_FIELD_CHECK(Age)
-        , S_FIELD_CHECK(HeightInMeters)
-        , S_FIELD_CHECK(Surname)
+        S_PROPERTY(Name)
+        , S_PROPERTY(Age)
+        , S_PROPERTY(HeightInMeters)
+        , S_PROPERTY(Surname)
     S_PROPERTIES_END
 };
 
-TEST_CASE("RapidJson field exists check", "[RapidJsonTests]")
+TEST_CASE_METHOD(FieldsExistTestCase,
+  "RapidJson field exists check",
+  "[RapidJsonTests]")
 {
     rapidjson::Document jsonDoc;
-    jsonDoc.Parse(Cerializer::getTestJson().c_str());
-    const auto testFields = TestFieldCheck::fromJson(jsonDoc);
+    jsonDoc.Parse(Cerializer::getTestJson<std::string>().c_str());
+    const auto testFields = fromJson(jsonDoc);
 
     REQUIRE(testFields.Name);
     REQUIRE(testFields.Age);

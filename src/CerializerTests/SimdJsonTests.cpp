@@ -1,12 +1,13 @@
+#include "Cerializer/SimdJsonObj.h"
+#include "Utils/TestUtils.h"
+
+#include "catch.hpp"
+
 #include <simdjson.h>
 
 #include <iostream>
-
-#include "Cerializer/SimdJsonObj.h"
-#include "catch.hpp"
-
-namespace SIMDJsonTests {
-class Hands : public Cerializer::SIMDJsonObj<Hands>
+namespace SimdJsonTests {
+class Hands : public Cerializer::SimdJsonObj<Hands>
 {
   public:
     std::set<int> fingers;
@@ -21,7 +22,7 @@ class Hands : public Cerializer::SIMDJsonObj<Hands>
     S_PROPERTIES_END
 };
 
-class Face : public Cerializer::SIMDJsonObj<Face>
+class Face : public Cerializer::SimdJsonObj<Face>
 {
   public:
     unsigned int eyes{ 0 };
@@ -31,12 +32,13 @@ class Face : public Cerializer::SIMDJsonObj<Face>
     S_PROPERTIES_END
 };
 
-class Person : public Cerializer::SIMDJsonObj<Person>
+class Person : public Cerializer::SimdJsonObj<Person>
 {
   public:
     std::string name;
     std::wstring lastName;
     std::vector<Hands> hands;
+    std::string mFakeNameAlias;
 
     Face face;
 
@@ -58,10 +60,19 @@ class Person : public Cerializer::SIMDJsonObj<Person>
         , S_PROPERTY(ageInMs)
         , S_PROPERTY(arms)
         , S_PROPERTY(hairs)
+        , S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") //Json object name
     S_PROPERTIES_END
 };
 
-TEST_CASE("SIMDJson Serialization", "[SIMDJsonTests]")
+TEST_CASE("SimdJson Alias Property Test", "[SimdJsonTests]")
+{
+    Person bob;
+    auto p = std::get<10>(bob.getProperties());
+    REQUIRE(strcmp(p.name, "fakeName") == 0);
+    REQUIRE(&bob.mFakeNameAlias == &(bob.*(p.member)));
+}
+
+TEST_CASE("SimdJson Serialization", "[SimdJsonTests]")
 {
     /*simdjson::dom::parser parser;
   simdjson::dom::element tweets = parser.load("twitter.json");
@@ -105,4 +116,34 @@ TEST_CASE("SIMDJson Serialization", "[SIMDJsonTests]")
     REQUIRE(bob.lastName == bobsClone.lastName);
     REQUIRE(bob.name == bobsClone.name);
 }
-} // namespace SIMDJsonTests
+
+class FieldsExistTestCase : public Cerializer::SimdJsonObj<FieldsExistTestCase>
+{
+  public:
+    std::optional<std::string> Name;
+    std::optional<int> Age{};
+    std::optional<double> HeightInMeters{};
+    std::optional<std::string> Surname;
+
+    S_PROPERTIES_BEGIN
+        S_PROPERTY(Name)
+        , S_PROPERTY(Age)
+        , S_PROPERTY(HeightInMeters)
+        , S_PROPERTY(Surname)
+    S_PROPERTIES_END
+};
+
+TEST_CASE_METHOD(FieldsExistTestCase,
+  "SimdJson field exists check",
+  "[SimdJsonTests]")
+{
+    simdjson::ondemand::parser parser;
+    auto testData = Cerializer::getTestJson<std::string>();
+    auto testFields = fromJson(parser, testData);
+
+    REQUIRE(testFields.Name);
+    REQUIRE(testFields.Age);
+    REQUIRE(testFields.HeightInMeters);
+    REQUIRE_FALSE(testFields.Surname);
+}
+} // namespace SimdJsonTests

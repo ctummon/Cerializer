@@ -1,14 +1,16 @@
 #pragma once
 
+#include "CerialUtils.h"
+
+#include "rapidjson/document.h"
+
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/stringbuffer.h>
 
+#include <optional>
 #include <set>
 #include <type_traits>
 #include <vector>
-
-#include "CerialUtils.h"
-#include "rapidjson/document.h"
 
 namespace Cerializer {
 template<typename>
@@ -30,11 +32,13 @@ struct RapidJsonConverter
     }
 
     // De-serialize
-    template<typename T,
-      typename std::enable_if<std::is_same_v<T, bool>>::type* = nullptr>
-    static T toType(const T& data)
+    template<class T,
+      typename std::enable_if<
+        std::is_same<std::optional<typename T::value_type>, T>::value>::type* =
+        nullptr>
+    static T toType(const rapidjson::Value& v)
     {
-        return data;
+        return std::make_optional<T::value_type>(toType<T::value_type>(v));
     }
 
     template<class T,

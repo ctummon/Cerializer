@@ -1,8 +1,10 @@
-#include <QJsonDocument>
-
 #include "Cerializer/QJsonObj.h"
+
+#include "Utils/TestUtils.h"
+
 #include "catch.hpp"
 
+#include <QJsonDocument>
 namespace QtJsonTests {
 class Hands : public Cerializer::QJsonObj<Hands>
 {
@@ -35,6 +37,7 @@ class Person : public Cerializer::QJsonObj<Person>
     std::string name;
     std::wstring lastName;
     std::vector<Hands> hands;
+    std::string mFakeNameAlias;
     QString testQStr;
 
     Face face;
@@ -58,10 +61,19 @@ class Person : public Cerializer::QJsonObj<Person>
         , S_PROPERTY(arms)
         , S_PROPERTY(testQStr)
         , S_PROPERTY(hairs)
+        , S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") //Json object name
     S_PROPERTIES_END
 };
 
-TEST_CASE("Qt Json Serialization", "[QJsonTests]")
+TEST_CASE("QtJson Alias Property Test", "[QJsonTests]")
+{
+    Person bob;
+    auto p = std::get<11>(bob.getProperties());
+    REQUIRE(strcmp(p.name, "fakeName") == 0);
+    REQUIRE(&bob.mFakeNameAlias == &(bob.*(p.member)));
+}
+
+TEST_CASE("QtJson Serialization", "[QJsonTests]")
 {
     Person bob;
 
@@ -100,5 +112,34 @@ TEST_CASE("Qt Json Serialization", "[QJsonTests]")
     REQUIRE(bob.hands[2].nails == bobsClone.hands[2].nails);
     REQUIRE(bob.lastName == bobsClone.lastName);
     REQUIRE(bob.name == bobsClone.name);
+}
+
+class FieldsExistTestCase : public Cerializer::QJsonObj<FieldsExistTestCase>
+{
+  public:
+    std::optional<std::string> Name;
+    std::optional<int> Age{};
+    std::optional<double> HeightInMeters{};
+    std::optional<std::string> Surname;
+
+    S_PROPERTIES_BEGIN
+        S_PROPERTY(Name)
+        , S_PROPERTY(Age)
+        , S_PROPERTY(HeightInMeters)
+        , S_PROPERTY(Surname)
+    S_PROPERTIES_END
+};
+
+TEST_CASE_METHOD(FieldsExistTestCase,
+  "QJson field exists check",
+  "[QJsonTests]")
+{
+    auto jsonDoc = QJsonDocument::fromJson(Cerializer::getTestJson<std::string>().c_str());
+    const auto testFields = fromJson(jsonDoc);
+
+    REQUIRE(testFields.Name);
+    REQUIRE(testFields.Age);
+    REQUIRE(testFields.HeightInMeters);
+    REQUIRE_FALSE(testFields.Surname);
 }
 } // namespace QtJsonTests

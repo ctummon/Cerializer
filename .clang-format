@@ -5,6 +5,6 @@ IndentWidth: 4
 MacroBlockBegin: "^S_PROPERTIES_BEGIN$"
 MacroBlockEnd: "^S_PROPERTIES_END$"
 AlignConsecutiveDeclarations: None
-StatementMacros: [CPPREST_S_PROPERTY,S_PROPERTY,S_FIELD_CHECK,CPPREST_FIELD_CHECK]
+StatementMacros: [CPPREST_S_PROPERTY,S_PROPERTY]
 AlignAfterOpenBracket: DontAlign
 #BreakConstructorInitializers: AfterColon

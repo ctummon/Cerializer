@@ -1,10 +1,8 @@
 #pragma once
 
-#include <utility>
-
 #include "CerialUtils.h"
 #include "CerializerProperties.h"
-
+#include <utility>
 namespace Cerializer {
 namespace Serializable {
 
@@ -28,14 +26,8 @@ class Object : public Properties<DerivedClass>
               using Type = typename decltype(property)::Type;
 
               const auto& itr = Converter::getField(data, property.name);
-              const bool found = itr != Converter::endItr(data);
 
-              if (property.field_check) {
-                  if constexpr (std::is_same_v<Type, bool>) {
-                      object.*(property.member) =
-                        Converter::template toType<Type>(found);
-                  }
-              } else if (found) {
+              if (itr != Converter::endItr(data)) {
                   object.*(property.member) =
                     Converter::template toType<Type>(Converter::getValue(itr));
               }

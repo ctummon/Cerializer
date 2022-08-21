@@ -12,26 +12,22 @@ class Properties
     struct PropertyImpl
     {
         constexpr PropertyImpl(T DerivedClass::*aMember,
-          IdentiferType const* aName,
-          bool aField_check = false)
+          IdentiferType const* aName)
           : member{ aMember }
           , name{ aName }
-          , field_check{ aField_check }
         {}
 
         using Type = T;
 
         T DerivedClass::*member;
         IdentiferType const* name;
-        bool field_check;
     };
 
     template<typename DClass = DerivedClass, typename T, typename IdentiferType>
     static constexpr auto property(T DClass::*member,
-      IdentiferType const* name,
-      bool field_check = false)
+      IdentiferType const* name)
     {
-        return PropertyImpl<T, IdentiferType>{ member, name, field_check };
+        return PropertyImpl<T, IdentiferType>{ member, name };
     }
 
     using DerivedClassAlias = typename DerivedClass;
