@@ -13,7 +13,7 @@ So far the following implmentations are supported:
 - Cpprestsdk
 - RapidJson
 - nlohmann::json
-- simdjson
+- simdjson (In progress)
 
 After the performance results I'm probably going to hold off on adding any other libaries for now.
 In the future I'll have a look at some of the more performant ones and see if I can find a more efficient solution.
