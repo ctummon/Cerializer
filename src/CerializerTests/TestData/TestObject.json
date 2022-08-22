@@ -1,5 +1,12 @@
 {
-	"Name" : "John",
-	"Age"  : 5,
-	"HeightInMeters" : 1.9
+    "Name": "John",
+    "Age": 5,
+    "HeightInMeters": 1.9,
+    "Person": {
+        "age": 14,
+        "ageInMs": 124011515,
+        "arms": 3,
+        "foot": 1,
+        "name": "john"
+    }
 }

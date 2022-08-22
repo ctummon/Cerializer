@@ -15,181 +15,182 @@ class SimdJsonObj;
 
 struct SimdJsonConverter
 {
-    // using JsonObj = simdjson::ParsedJson;
-    using JsonVal =
-      simdjson::simdjson_result<simdjson::fallback::ondemand::value>;
-
-    static const auto getField(simdjson::ondemand::document& doc,
-      const char* fieldName)
-    {
-        return doc[fieldName];
-    }
+    using JsonVal = simdjson::ondemand::value;
 
     // De-serialize
     template<class T,
       typename std::enable_if<
         std::is_same<std::optional<typename T::value_type>, T>::value>::type* =
         nullptr>
-    T toType(const JsonVal& val)
+    static T toType(JsonVal val)
     {
-        return std::make_optional<T::value_type>(toType<T::value_type>(v));
+        return std::make_optional<T::value_type>(toType<T::value_type>(val));
     }
 
     template<class T,
       typename std::enable_if<
         std::is_base_of<Cerializer::SimdJsonObj<T>, T>::value>::type* = nullptr>
-    static T toType(const JsonVal& val)
+    static T toType(JsonVal val)
     {
-        return T{}; // T::fromJson(val.get_object());
+        //TODO: Refactor how SimdJsonConverter and SimdJsonObj interact.
+        assert("Not supported");
+        return T{};
     }
 
     template<class T,
       typename std::enable_if<std::is_same<short, T>::value>::type* = nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         short returnVal{};
-        /*if (v.IsInt())
-    {
-        returnVal = static_cast<short>(v.GetInt());
-    }*/
+
+        auto ir = v.get_int64();
+        if(!ir.error()){
+            returnVal = static_cast<short>(ir.value_unsafe());
+        }
+
         return returnVal;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<unsigned short, T>::value>::type* =
         nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         unsigned short returnVal{};
-        /*if (v.IsUint())
-    {
-        returnVal = static_cast<unsigned short>(v.GetUint());
-    }*/
+
+        auto ir = v.get_int64();
+        if(!ir.error()){
+            returnVal = static_cast<unsigned short>(ir.value_unsafe());
+        }
+
         return returnVal;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<int, T>::value>::type* = nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         int returnVal{};
-        /*if (v.IsInt())
-    {
-        returnVal = v.GetInt();
-    }*/
+        auto ir = v.get_int64();
+        if(!ir.error()){
+            returnVal = static_cast<int>(ir.value_unsafe());
+        }
+
         return returnVal;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<unsigned int, T>::value>::type* =
         nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         unsigned int returnVal{};
-        /*if (v.IsUint())
-    {
-        returnVal = v.GetUint();
-    }*/
+        auto ir = v.get_int64();
+        if(!ir.error()){
+            returnVal = static_cast<unsigned int>(ir.value_unsafe());
+        }
         return returnVal;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<long, T>::value>::type* = nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         long returnVal{};
-        /*if (v.IsInt64())
-    {
-        returnVal = static_cast<long>(v.GetInt64());
-    }*/
+        auto ir = v.get_int64();
+        if(!ir.error()){
+            returnVal = static_cast<long>(ir.value_unsafe());
+        }
         return returnVal;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<unsigned long, T>::value>::type* =
         nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         unsigned long returnVal{};
-        /*if (v.IsUint64())
-    {
-        returnVal = static_cast<unsigned long>(v.GetUint64());
-    }*/
+        auto ir = v.get_int64();
+        if(!ir.error()){
+            returnVal = static_cast<unsigned long>(ir.value_unsafe());
+        }
         return returnVal;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<long long, T>::value>::type* =
         nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         long long returnVal{};
-        /*if (v.IsInt64())
-    {
-        returnVal = static_cast<long long>(v.GetInt64());
-    }*/
+        auto ir = v.get_int64();
+        if(!ir.error()){
+            returnVal = static_cast<long long>(ir.value_unsafe());
+        }
         return returnVal;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<std::wstring, T>::value>::type* =
         nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         T returnVal;
-        /*if (v.IsString())
-    {
-        returnVal = Utils::stringConverter.from_bytes(v.GetString());
-    }*/
+        auto sr = v.get_string();
+        if(!sr.error()){
+            auto stringView = sr.value_unsafe();
+            //todo: fix
+            returnVal = Utils::stringConverter.from_bytes(&*stringView.begin(), &*stringView.begin());
+        }
         return returnVal;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<std::string, T>::value>::type* =
         nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         T returnVal;
-        /*if (v.IsString())
-    {
-        returnVal = v.GetString();
-    }*/
+        auto sr = v.get_string();
+        if(!sr.error()){
+            returnVal = sr.value_unsafe();
+        }
         return returnVal;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<double, T>::value>::type* = nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         double returnVal{};
-        /*if (v.IsNumber())
-    {
-        returnVal = v.GetDouble();
-    }*/
+        auto dr = v.get_double();
+        if(!dr.error()){
+            returnVal = static_cast<double>(dr.value_unsafe());
+        }
         return returnVal;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<float, T>::value>::type* = nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         float returnVal{};
-        /*if (v.IsNumber())
-    {
-        returnVal = static_cast<float>(v.GetDouble());
-    }*/
+        auto fr = v.get_double();
+        if(!fr.error()){
+            returnVal = static_cast<float>(fr.value_unsafe());
+        }
         return returnVal;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<bool, T>::value>::type* = nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         bool returnVal{};
-        /*if (v.IsBool())
-    {
-        returnVal = v.GetBool();
-    }*/
+        auto br = v.get_bool();
+        if(!br.error()){
+            returnVal = br.value_unsafe();
+        }
         return returnVal;
     }
 
@@ -197,34 +198,37 @@ struct SimdJsonConverter
       typename std::enable_if<
         std::is_same<std::shared_ptr<typename T::element_type>,
           T>::value>::type* = nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
-        return std::make_shared<T::element_type>(toType<T::element_type>(v));
+        //Should be handled elsewhere, need to refactor
+        assert("Not supported");
+        return std::make_shared<T::element_type>();
     }
 
     template<class T,
       typename std::enable_if<std::is_same<std::vector<typename T::value_type>,
         T>::value>::type* = nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         T returnArray;
+        //need to account for array of objects. Whole class needs a refactor.
         /*if (v.IsArray())
-    {
-        const auto& arrayData = v.GetArray();
-        const auto& endItr = arrayData.end();
-        auto itr = arrayData.begin();
-        for (; itr != endItr; ++itr)
         {
-            returnArray.push_back(toType<typename T::value_type>(*itr));
-        }
-    }*/
+            const auto& arrayData = v.GetArray();
+            const auto& endItr = arrayData.end();
+            auto itr = arrayData.begin();
+            for (; itr != endItr; ++itr)
+            {
+                returnArray.push_back(toType<typename T::value_type>(*itr));
+            }
+        }*/
         return returnArray;
     }
 
     template<class T,
       typename std::enable_if<std::is_same<std::set<typename T::value_type>,
         T>::value>::type* = nullptr>
-    static T toType(const JsonVal& v)
+    static T toType(JsonVal v)
     {
         T returnSet;
         /*if (v.IsArray())

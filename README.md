@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.com/CathalT/Cerializer.svg?branch=master)](https://travis-ci.com/CathalT/Cerializer)
 
-# What is Cerializer (C++14) ?
+# What is Cerializer (C++17) ?
 
 Cerializer is a set of headers that help take the pain out of JSON serialization in C++ with the help of compile time 'reflection'.
 
@@ -13,6 +13,7 @@ So far the following implmentations are supported:
 - Cpprestsdk
 - RapidJson
 - nlohmann::json
+- simdjson
 
 After the performance results I'm probably going to hold off on adding any other libaries for now.
 In the future I'll have a look at some of the more performant ones and see if I can find a more efficient solution.
@@ -21,8 +22,7 @@ In the future I'll have a look at some of the more performant ones and see if I 
 
 Copy the Cerializer folder into your project and include the JsonObj file of your choice.
 
-Builds on VS2017, Clang and GCC. C++ 14 is required.
-It will not compile on VS2015.
+Builds on VS2017, Clang and GCC. C++ 17 is required.
 
 ## Example Usage (cpprest):
 
@@ -45,13 +45,16 @@ public:
     std::string name;
     int age{ 0 };
     std::vector<Hand> hands{ 0 };
-
+    std::optional<int> legs; // Will return false if object is never found in Json
+    std::string mFakeNameAlias;
     
    S_PROPERTIES_BEGIN
         //Note for other JSON serializers use S_PROPERTY instead, see tests for examples.
         CPPREST_S_PROPERTY(name),
         CPPREST_S_PROPERTY(age),
         CPPREST_S_PROPERTY(hands),
+        CPPREST_S_PROPERTY(legs),
+        CPPREST_S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") // Json object name
    S_PROPERTIES_END
 };
 
@@ -77,12 +80,15 @@ public:
     std::string name;
     int age{ 0 };
     std::vector<Hand> hands{ 0 };
+    std::optional<int> legs; // Will return false if object is never found in Json
+    std::string mFakeNameAlias;
 
-    
    S_PROPERTIES_BEGIN
         S_PROPERTY(name),
         S_PROPERTY(age),
         S_PROPERTY(hands),
+        S_PROPERTY(legs),
+        S_PROPERTY_ALIAS(mFakeNameAlias, "fakeName") // Json object name
    S_PROPERTIES_END
 };
 

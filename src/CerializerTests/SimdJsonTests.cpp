@@ -74,17 +74,6 @@ TEST_CASE("SimdJson Alias Property Test", "[SimdJsonTests]")
 
 TEST_CASE("SimdJson Serialization", "[SimdJsonTests]")
 {
-    /*simdjson::dom::parser parser;
-  simdjson::dom::element tweets = parser.load("twitter.json");
-  std::cout << tweets["search_metadata"]["count"] << " results." << std::endl;
-
-  simdjson::ondemand::parser ondemand_parser;
-  auto json = R"({"test":"hello"})"_padded;
-  simdjson::ondemand::document doc = ondemand_parser.iterate(json);
-  std::cout << "test: " << doc["test"] << std::endl;*/
-
-    simdjson::ondemand::parser parser;
-
     Person bob;
 
     bob.age = 14;
@@ -101,7 +90,8 @@ TEST_CASE("SimdJson Serialization", "[SimdJsonTests]")
     bob.name = "bobby";
 
     auto bobJsonStr = bob.toJsonStr();
-    Person bobsClone = Person::fromJson(parser, bobJsonStr);
+    REQUIRE_FALSE(bobJsonStr.empty());
+    Person bobsClone = Person::fromJson(bobJsonStr);
 
     REQUIRE(bob.age == bobsClone.age);
     REQUIRE(bob.ageInMs == bobsClone.ageInMs);
@@ -124,12 +114,15 @@ class FieldsExistTestCase : public Cerializer::SimdJsonObj<FieldsExistTestCase>
     std::optional<int> Age{};
     std::optional<double> HeightInMeters{};
     std::optional<std::string> Surname;
+    std::optional<Person> Person;
+    std::optional<Hands> Hands;
 
     S_PROPERTIES_BEGIN
         S_PROPERTY(Name)
         , S_PROPERTY(Age)
         , S_PROPERTY(HeightInMeters)
         , S_PROPERTY(Surname)
+        , S_PROPERTY(Person)
     S_PROPERTIES_END
 };
 
@@ -137,9 +130,8 @@ TEST_CASE_METHOD(FieldsExistTestCase,
   "SimdJson field exists check",
   "[SimdJsonTests]")
 {
-    simdjson::ondemand::parser parser;
     auto testData = Cerializer::getTestJson<std::string>();
-    auto testFields = fromJson(parser, testData);
+    auto testFields = fromJson(testData);
 
     REQUIRE(testFields.Name);
     REQUIRE(testFields.Age);
