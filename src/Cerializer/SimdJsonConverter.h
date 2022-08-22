@@ -1,13 +1,14 @@
 #pragma once
 
+#include "CerialUtils.h"
+
+#include <minijson_writer/minijson_writer.hpp>
 #include <simdjson.h>
 
 #include <optional>
 #include <set>
 #include <type_traits>
 #include <vector>
-
-#include "CerialUtils.h"
 
 namespace Cerializer {
 template<typename>
@@ -32,7 +33,7 @@ struct SimdJsonConverter
         std::is_base_of<Cerializer::SimdJsonObj<T>, T>::value>::type* = nullptr>
     static T toType(JsonVal val)
     {
-        //TODO: Refactor how SimdJsonConverter and SimdJsonObj interact.
+        // TODO: Refactor how SimdJsonConverter and SimdJsonObj interact.
         assert("Not supported");
         return T{};
     }
@@ -44,7 +45,7 @@ struct SimdJsonConverter
         short returnVal{};
 
         auto ir = v.get_int64();
-        if(!ir.error()){
+        if (!ir.error()) {
             returnVal = static_cast<short>(ir.value_unsafe());
         }
 
@@ -59,7 +60,7 @@ struct SimdJsonConverter
         unsigned short returnVal{};
 
         auto ir = v.get_int64();
-        if(!ir.error()){
+        if (!ir.error()) {
             returnVal = static_cast<unsigned short>(ir.value_unsafe());
         }
 
@@ -72,7 +73,7 @@ struct SimdJsonConverter
     {
         int returnVal{};
         auto ir = v.get_int64();
-        if(!ir.error()){
+        if (!ir.error()) {
             returnVal = static_cast<int>(ir.value_unsafe());
         }
 
@@ -86,7 +87,7 @@ struct SimdJsonConverter
     {
         unsigned int returnVal{};
         auto ir = v.get_int64();
-        if(!ir.error()){
+        if (!ir.error()) {
             returnVal = static_cast<unsigned int>(ir.value_unsafe());
         }
         return returnVal;
@@ -98,7 +99,7 @@ struct SimdJsonConverter
     {
         long returnVal{};
         auto ir = v.get_int64();
-        if(!ir.error()){
+        if (!ir.error()) {
             returnVal = static_cast<long>(ir.value_unsafe());
         }
         return returnVal;
@@ -111,7 +112,7 @@ struct SimdJsonConverter
     {
         unsigned long returnVal{};
         auto ir = v.get_int64();
-        if(!ir.error()){
+        if (!ir.error()) {
             returnVal = static_cast<unsigned long>(ir.value_unsafe());
         }
         return returnVal;
@@ -124,7 +125,7 @@ struct SimdJsonConverter
     {
         long long returnVal{};
         auto ir = v.get_int64();
-        if(!ir.error()){
+        if (!ir.error()) {
             returnVal = static_cast<long long>(ir.value_unsafe());
         }
         return returnVal;
@@ -137,10 +138,11 @@ struct SimdJsonConverter
     {
         T returnVal;
         auto sr = v.get_string();
-        if(!sr.error()){
+        if (!sr.error()) {
             auto stringView = sr.value_unsafe();
-            //todo: fix
-            returnVal = Utils::stringConverter.from_bytes(&*stringView.begin(), &*stringView.begin());
+            // todo: fix
+            returnVal = Utils::stringConverter.from_bytes(
+              &*stringView.begin(), &*stringView.begin());
         }
         return returnVal;
     }
@@ -152,7 +154,7 @@ struct SimdJsonConverter
     {
         T returnVal;
         auto sr = v.get_string();
-        if(!sr.error()){
+        if (!sr.error()) {
             returnVal = sr.value_unsafe();
         }
         return returnVal;
@@ -164,7 +166,7 @@ struct SimdJsonConverter
     {
         double returnVal{};
         auto dr = v.get_double();
-        if(!dr.error()){
+        if (!dr.error()) {
             returnVal = static_cast<double>(dr.value_unsafe());
         }
         return returnVal;
@@ -176,7 +178,7 @@ struct SimdJsonConverter
     {
         float returnVal{};
         auto fr = v.get_double();
-        if(!fr.error()){
+        if (!fr.error()) {
             returnVal = static_cast<float>(fr.value_unsafe());
         }
         return returnVal;
@@ -188,7 +190,7 @@ struct SimdJsonConverter
     {
         bool returnVal{};
         auto br = v.get_bool();
-        if(!br.error()){
+        if (!br.error()) {
             returnVal = br.value_unsafe();
         }
         return returnVal;
@@ -200,7 +202,7 @@ struct SimdJsonConverter
           T>::value>::type* = nullptr>
     static T toType(JsonVal v)
     {
-        //Should be handled elsewhere, need to refactor
+        // Should be handled elsewhere, need to refactor
         assert("Not supported");
         return std::make_shared<T::element_type>();
     }
@@ -211,7 +213,7 @@ struct SimdJsonConverter
     static T toType(JsonVal v)
     {
         T returnArray;
-        //need to account for array of objects. Whole class needs a refactor.
+        // need to account for array of objects. Whole class needs a refactor.
         /*if (v.IsArray())
         {
             const auto& arrayData = v.GetArray();
@@ -245,137 +247,294 @@ struct SimdJsonConverter
     }
 
     // Serialize
+    // Object writers
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc,
+    static void fromType(minijson::object_writer& writer,
+      Cerializer::SimdJsonObj<T>& val,
+      const char* key)
+    {
+        auto nested_writer = writer.nested_object(key);
+        val.serializeToWriter(nested_writer);
+        nested_writer.close();
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const Cerializer::SimdJsonObj<T>& val,
+      const char* key)
+    {
+        auto nested_writer = writer.nested_object(key);
+        val.serializeToWriter(nested_writer);
+        nested_writer.close();
+    }
+
+    template<class T,
+      typename BasicType,
+      typename std::enable_if_t<std::is_fundamental_v<T>>>
+    static void fromType(minijson::object_writer& writer,
+      const BasicType val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const short val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const unsigned short val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const int val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const unsigned int val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const long val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const unsigned long val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const long long val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const double val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const float val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const bool val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const std::string& val,
+      const char* key)
+    {
+        writer.write(key, val);
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const std::wstring& val,
+      const char* key)
+    {
+        writer.write(key, Utils::stringConverter.to_bytes(val));
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      const std::shared_ptr<typename T::element_type>& ptr,
+      const char* key)
+    {
+        if (ptr) {
+            fromType<T::element_type>(writer, *ptr, key);
+        }
+    }
+
+    template<class T>
+    static void fromType(minijson::object_writer& writer,
+      typename T::element_type* ptr,
+      const char* key)
+    {
+        if (ptr) {
+            fromType<T::element_type>(writer, ptr, key);
+        }
+    }
+
+    // Array writers
+    template<class T>
+    static void fromTypeArray(minijson::array_writer& writer,
       Cerializer::SimdJsonObj<T>& val)
     {
-        // val.appendJsonStr(writer);
+        auto nested_writer = writer.nested_object();
+        val.serializeToWriter(nested_writer);
+        nested_writer.close();
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc,
+    static void fromTypeArray(minijson::array_writer& writer,
       const Cerializer::SimdJsonObj<T>& val)
     {
-        // val.appendJsonStr(writer);
+        auto nested_writer = writer.nested_object();
+        val.serializeToWriter(nested_writer);
+        nested_writer.close();
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc, const short val)
+    static void fromTypeArray(minijson::array_writer& writer, const short val)
     {
-        // writer.Int(val);
+        writer.write(val);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc,
+    static void fromTypeArray(minijson::array_writer& writer,
       const unsigned short val)
     {
-        // writer.Uint(val);
+        writer.write(val);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc, const int val)
+    static void fromTypeArray(minijson::array_writer& writer, const int val)
     {
-        // writer.Int(val);
+        writer.write(val);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc,
+    static void fromTypeArray(minijson::array_writer& writer,
       const unsigned int val)
     {
-        // writer.Uint(val);
+        writer.write(val);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc, const long val)
+    static void fromTypeArray(minijson::array_writer& writer, const long val)
     {
-        // writer.Int64(val);
+        writer.write(val);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc,
+    static void fromTypeArray(minijson::array_writer& writer,
       const unsigned long val)
     {
-        // writer.Uint(val);
+        writer.write(val);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc, const long long val)
+    static void fromTypeArray(minijson::array_writer& writer,
+      const long long val)
     {
-        // writer.Int64(val);
+        writer.write(val);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc, const double val)
+    static void fromTypeArray(minijson::array_writer& writer, const double val)
     {
-        // writer.Double(val);
+        writer.write(val);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc, const float val)
+    static void fromTypeArray(minijson::array_writer& writer, const float val)
     {
-        // writer.Double(static_cast<double>(val));
+        writer.write(val);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc, const bool val)
+    static void fromTypeArray(minijson::array_writer& writer, const bool val)
     {
-        // writer.Bool(val);
+        writer.write(val);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc,
-      const std::wstring& val)
-    {
-        // writer.String(Utils::stringConverter.to_bytes(val).c_str());
-    }
-
-    template<class T>
-    static void fromType(simdjson::ondemand::document& doc,
+    static void fromTypeArray(minijson::array_writer& writer,
       const std::string& val)
     {
-        // writer.String(val.c_str());
+        writer.write(val);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc,
+    static void fromTypeArray(minijson::array_writer& writer,
+      const std::wstring& val)
+    {
+        writer.write(Utils::stringConverter.to_bytes(val));
+    }
+
+    template<class T>
+    static void fromTypeArray(minijson::array_writer& writer,
       const std::shared_ptr<typename T::element_type>& ptr)
     {
         if (ptr) {
-            fromType<T::element_type>(doc, *ptr);
+            fromType<T::element_type>(writer, *ptr);
         }
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc,
+    static void fromTypeArray(minijson::array_writer& writer,
       typename T::element_type* ptr)
     {
         if (ptr) {
-            fromType<T::element_type>(doc, ptr);
+            fromType<T::element_type>(writer, ptr);
         }
     }
 
     template<class T>
-    static void convertToJsonArray(simdjson::ondemand::document& doc,
-      const T& container)
+    static void convertToJsonArray(minijson::object_writer& writer,
+      const T& container,
+      const char* key)
     {
+        minijson::array_writer nested_writer = writer.nested_array(key);
         for (const auto& i : container) {
-            // move key writing to main loop.
-            fromType<typename T::value_type>(doc, i);
+            fromTypeArray<typename T::value_type>(nested_writer, i);
         }
+        nested_writer.close();
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc,
-      const std::vector<typename T::value_type>& inputVector)
+    static void fromType(minijson::object_writer& writer,
+      const std::vector<typename T::value_type>& inputVector,
+      const char* key)
     {
-        convertToJsonArray(doc, inputVector);
+        convertToJsonArray(writer, inputVector, key);
     }
 
     template<class T>
-    static void fromType(simdjson::ondemand::document& doc,
-      const std::set<typename T::value_type>& inputSet)
+    static void fromType(minijson::object_writer& writer,
+      const std::set<typename T::value_type>& inputSet,
+      const char* key)
     {
-        convertToJsonArray(doc, inputSet);
+        convertToJsonArray(writer, inputSet, key);
     }
 };
 } // namespace Cerializer

@@ -66,12 +66,11 @@ class Person : public Cerializer::RapidJsonObj<Person>
     S_PROPERTIES_END
 };
 
-TEST_CASE("RapidJson Alias Property Test", "[RapidJsonTests]")
+TEST_CASE_METHOD(Person, "RapidJson Alias Property Test", "[RapidJsonTests]")
 {
-    Person bob;
-    auto p = std::get<10>(bob.getProperties());
+    auto p = std::get<10>(getProperties());
     REQUIRE(strcmp(p.name, "fakeName") == 0);
-    REQUIRE(&bob.mFakeNameAlias == &(bob.*(p.member)));
+    REQUIRE(&mFakeNameAlias == &(this->*(p.member)));
 }
 
 TEST_CASE("RapidJson Serialization", "[RapidJsonTests]")

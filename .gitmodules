@@ -7,3 +7,6 @@
 [submodule "thirdparty/simdjson"]
 	path = thirdparty/simdjson
 	url = https://github.com/simdjson/simdjson
+[submodule "thirdparty/minijson_writer"]
+	path = thirdparty/minijson_writer
+	url = git@github.com:giacomodrago/minijson_writer.git

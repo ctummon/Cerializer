@@ -40,6 +40,7 @@ endif(${BUILD_NLOHMANN})
 
 if(${BUILD_SIMD_JSON})
     list(APPEND Headers
+        ${CMAKE_CURRENT_SOURCE_DIR}/MiniJsonWriter.h
         ${CMAKE_CURRENT_SOURCE_DIR}/SimdJsonObj.h
         ${CMAKE_CURRENT_SOURCE_DIR}/SimdJsonConverter.h)
 
@@ -52,10 +53,14 @@ add_executable(CerializerTests ${SourceFiles})
 
 target_include_directories(
     CerializerTests PUBLIC
-    "${PROJECT_SOURCE_DIR}/src"
+    "${PROJECT_SOURCE_DIR}/src/"
+)
+
+target_include_directories(
+    CerializerTests SYSTEM PRIVATE
     "${PROJECT_SOURCE_DIR}/thirdparty/"
-    "${PROJECT_SOURCE_DIR}/thirdparty/rapidjson/include"
-    "${PROJECT_SOURCE_DIR}/thirdparty/nlohmann/json/include"
+    "${PROJECT_SOURCE_DIR}/thirdparty/rapidjson/include/"
+    "${PROJECT_SOURCE_DIR}/thirdparty/nlohmann/json/include/"
     "${PROJECT_SOURCE_DIR}/thirdparty/simdjson/singleheader/"
 )
 
