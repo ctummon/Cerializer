@@ -9,6 +9,8 @@
 #include <cstring>
 #include <optional>
 #include <type_traits>
+#include <set>
+#include <vector>
 
 // TODO: Need to ensure only 1 per thread, not thread safe.
 static simdjson::ondemand::parser&
@@ -137,7 +139,7 @@ class SimdJsonObj : public Properties<DerivedClass>
     static void filterObject(simdjson::ondemand::object jsonObj,
       MemberObject& memberObject)
     {
-        // No-op does not inherit SimdJsonObj
+        //No-op
     }
 
     template<typename ParentObject>
@@ -166,36 +168,45 @@ class SimdJsonObj : public Properties<DerivedClass>
           });
     }
 
-    template<typename MemberObject,
-      typename std::enable_if<
-        std::is_same<std::vector<typename MemberObject::value_type>,
-          MemberObject>::type>::type* = nullptr>
-    template<typename MemberObject>
-    static void writeToArray(
-      std::vector<typename MemberObject::value_type>& memberObject,
-      simdjson::ondemand::value jsonVal)
+    template<typename ParentObject>//, typename std::enable_if<std::is_same<std::vector<int>, MemberObject>::type>::type* = nullptr>
+    static void handleArray(
+      ParentObject& parentObject,
+      simdjson::ondemand::value jsonVal,
+      simdjson::ondemand::raw_json_string keyName)
     {
         auto ar = jsonVal.get_array();
         if (ar.error()) {
             return;
         }
-        auto a = ar.value_unsafe();
-        memberObject.reserve(a.size());
-        for (auto child : a) {
-            MemberObject::value_type newType;
-            recursive_processor(newType, child);
-            memberObject.push_back(newType);
-        }
+        auto arrayValue = ar.value_unsafe();
+
+        constexpr auto sizeOfProperties =
+          std::tuple_size<decltype(parentObject.getProperties())>::value;
+
+        // This approach may be slow, need to compare with simdjson DOM Api
+        Utils::for_sequence(
+          std::make_index_sequence<sizeOfProperties>{}, [&](auto i) {
+              constexpr auto property =
+                std::get<i>(parentObject.getProperties());
+              using Type = typename decltype(property)::Type;
+              if (keyName == property.name) {
+                for (auto child : arrayValue) {
+                    //Decide whether to push back fundamental value or object or container.
+                    //To either vector or set.
+                    //parentObject.*(property.member).push_back(SimdJsonConverter::template toType<Type>(jsonVal));
+                }
+              }
+          });
     }
 
-    template<typename MemberObject,
-      typename std::enable_if<
-        std::is_same_v<std::set<typename MemberObject::value_type>,
-          MemberObject>>::type* = nullptr>
     template<typename MemberObject>
+    using IsMemberObjectSet = std::is_same<MemberObject, std::set<typename MemberObject::value_type>>;
+
+    /*template<typename MemberObject, typename std::enable_if<IsMemberObjectSet<MemberObject>::value>::type* = nullptr>
     static void writeToArray(
-      std::set<typename MemberObject::value_type>& memberObject,
-      simdjson::ondemand::value jsonVal)
+      std::set<typename MemberObject>& memberObject,
+      simdjson::ondemand::value jsonVal,
+      simdjson::ondemand::raw_json_string key)
     {
         auto ar = jsonVal.get_array();
         if (ar.error()) {
@@ -207,31 +218,24 @@ class SimdJsonObj : public Properties<DerivedClass>
             recursive_processor(newType, child);
             memberObject.insert(toType<typename T::value_type>(newType))
         }
-    }
+    }*/
 
     template<typename MemberObject>
-    using IsNotMemberObjectSet = std::negation<
-      std::is_same<MemberObject, std::set<typename MemberObject::value_type>>>;
+    using IsNotMemberObjectSet = std::negation<IsMemberObjectSet<MemberObject>>;
 
     template<typename MemberObject>
-    using IsNotMemberObjectVector = std::negation<std::is_same<MemberObject,
-      std::vector<typename MemberObject::value_type>>>;
+    using IsNotMemberObjectVector = std::negation<std::is_same<MemberObject, std::vector<typename MemberObject::value_type>>>;
 
     template<typename MemberObject>
-    using IsNotVectorOrSet =
-      std::conjunction<IsNotMemberObjectSet<MemberObject>,
-        IsNotMemberObjectVector<MemberObject>>;
+    using IsNotVectorOrSet = std::conjunction<IsNotMemberObjectSet<MemberObject>, IsNotMemberObjectVector<MemberObject>>;
 
-    // TODO FIX ARRAYS.
-    /*template<typename MemberObject,
-      typename std::enable_if<IsNotVectorOrSet<MemberObject>::value>::type* =
-      nullptr>*/
-    template<typename MemberObject>
+    /*template<typename MemberObject, typename std::enable_if<IsNotMemberObjectSet<MemberObject>::value>::type* = nullptr >
     static void writeToArray(MemberObject& memberObject,
-      simdjson::ondemand::value jsonVal)
+      simdjson::ondemand::value jsonVal,
+      simdjson::ondemand::raw_json_string key)
     {
         // No-op
-    }
+    }*/
 
     template<class ParentObject>
     static void recursive_processor(ParentObject& parentObject,
@@ -253,7 +257,7 @@ class SimdJsonObj : public Properties<DerivedClass>
                 }
                 break;
             case simdjson::ondemand::json_type::array:
-                writeToArray(parentObject, element);
+                handleArray(parentObject, element, key);
                 break;
             case simdjson::ondemand::json_type::number:
             case simdjson::ondemand::json_type::string:
