@@ -29,22 +29,6 @@ class SimdJsonObj : public Properties<DerivedClass>
     using IsNotMemberObject =
       std::negation<std::is_base_of<SimdJsonObj<MemberObject>, MemberObject>>;
 
-    template<typename MemberObject>
-    using IsNotSharedPtrMemberObject = std::negation<
-      std::is_same<std::shared_ptr<typename MemberObject::element_type>,
-        MemberObject>>;
-
-    template<typename MemberObject>
-    using IsNotOptionalMemberObject = std::negation<
-      std::is_same<std::optional<typename MemberObject::value_type>,
-        MemberObject>>;
-
-    template<typename MemberObject>
-    using ShouldNotHandleObject =
-      std::conjunction<IsNotMemberObject<MemberObject>,
-        IsNotSharedPtrMemberObject<MemberObject>,
-        IsNotOptionalMemberObject<MemberObject>>;
-
   public:
     virtual ~SimdJsonObj<DerivedClass>() = default;
 
@@ -171,8 +155,7 @@ class SimdJsonObj : public Properties<DerivedClass>
         T returnVal;
         auto sr = v.get_string();
         if (!sr.error()) {
-            auto stringView = sr.value_unsafe();
-            // todo: tidy up?
+            const auto stringView = sr.value_unsafe();
             returnVal = Utils::stringConverter.from_bytes(
               stringView.data(), stringView.data() + stringView.size());
         }
@@ -396,14 +379,13 @@ class SimdJsonObj : public Properties<DerivedClass>
           });
     }
 
-    template<typename ParentObject> //, typename
-                                    //std::enable_if<std::is_same<std::vector<int>,
-                                    //MemberObject>::type>::type* = nullptr>
-                                    static void handleArray(
-                                      ParentObject& parentObject,
-                                      simdjson::ondemand::value jsonVal,
-                                      simdjson::ondemand::raw_json_string
-                                        keyName)
+    template<
+      typename ParentObject> //, typename
+                             // std::enable_if<std::is_same<std::vector<int>,
+                             // MemberObject>::type>::type* = nullptr>
+    static void handleArray(ParentObject& parentObject,
+      simdjson::ondemand::value jsonVal,
+      simdjson::ondemand::raw_json_string keyName)
     {
         constexpr auto sizeOfProperties =
           std::tuple_size<decltype(parentObject.getProperties())>::value;
@@ -418,31 +400,6 @@ class SimdJsonObj : public Properties<DerivedClass>
               }
           });
     }
-
-    template<typename MemberObject>
-    using IsMemberObjectSet =
-      std::is_same<MemberObject, std::set<typename MemberObject::value_type>>;
-
-    template<typename MemberObject>
-    using IsNotMemberObjectSet = std::negation<IsMemberObjectSet<MemberObject>>;
-
-    template<typename MemberObject>
-    using IsNotMemberObjectVector = std::negation<std::is_same<MemberObject,
-      std::vector<typename MemberObject::value_type>>>;
-
-    template<typename MemberObject>
-    using IsNotVectorOrSet =
-      std::conjunction<IsNotMemberObjectSet<MemberObject>,
-        IsNotMemberObjectVector<MemberObject>>;
-
-    /*template<typename MemberObject, typename
-    std::enable_if<IsNotMemberObjectSet<MemberObject>::value>::type* = nullptr >
-    static void writeToArray(MemberObject& memberObject,
-      simdjson::ondemand::value jsonVal,
-      simdjson::ondemand::raw_json_string key)
-    {
-        // No-op
-    }*/
 
     template<class ParentObject>
     static void recursive_processor(ParentObject& parentObject,

@@ -90,7 +90,6 @@ TEST_CASE("SimdJson Serialization", "[SimdJsonTests]")
     bob.name = "bobby";
 
     auto bobJsonStr = bob.toJsonStr();
-    std::cout << bobJsonStr << std::endl;
     REQUIRE_FALSE(bobJsonStr.empty());
     Person bobsClone = Person::fromJson(bobJsonStr);
 
