@@ -8,8 +8,8 @@
 
 #include <cstring>
 #include <optional>
-#include <type_traits>
 #include <set>
+#include <type_traits>
 #include <vector>
 
 // TODO: Need to ensure only 1 per thread, not thread safe.
@@ -24,7 +24,6 @@ namespace Cerializer {
 
 template<typename DerivedClass>
 class SimdJsonObj : public Properties<DerivedClass>
-
 {
     template<typename MemberObject>
     using IsNotMemberObject =
@@ -49,6 +48,238 @@ class SimdJsonObj : public Properties<DerivedClass>
   public:
     virtual ~SimdJsonObj<DerivedClass>() = default;
 
+    /////// De-serialize /////////////
+    template<class T,
+      typename std::enable_if<
+        std::is_same<std::optional<typename T::value_type>, T>::value>::type* =
+        nullptr>
+    static T toType(simdjson::ondemand::value val)
+    {
+        return std::make_optional<T::value_type>(toType<T::value_type>(val));
+    }
+
+    template<class T,
+      typename std::enable_if<
+        std::is_base_of<Cerializer::SimdJsonObj<T>, T>::value>::type* = nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        T returnType;
+
+        recursive_processor(returnType, v);
+
+        return returnType;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<short, T>::value>::type* = nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        short returnVal{};
+
+        auto ir = v.get_int64();
+        if (!ir.error()) {
+            returnVal = static_cast<short>(ir.value_unsafe());
+        }
+
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<unsigned short, T>::value>::type* =
+        nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        unsigned short returnVal{};
+
+        auto ir = v.get_int64();
+        if (!ir.error()) {
+            returnVal = static_cast<unsigned short>(ir.value_unsafe());
+        }
+
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<int, T>::value>::type* = nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        int returnVal{};
+        auto ir = v.get_int64();
+        if (!ir.error()) {
+            returnVal = static_cast<int>(ir.value_unsafe());
+        }
+
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<unsigned int, T>::value>::type* =
+        nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        unsigned int returnVal{};
+        auto ir = v.get_int64();
+        if (!ir.error()) {
+            returnVal = static_cast<unsigned int>(ir.value_unsafe());
+        }
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<long, T>::value>::type* = nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        long returnVal{};
+        auto ir = v.get_int64();
+        if (!ir.error()) {
+            returnVal = static_cast<long>(ir.value_unsafe());
+        }
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<unsigned long, T>::value>::type* =
+        nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        unsigned long returnVal{};
+        auto ir = v.get_int64();
+        if (!ir.error()) {
+            returnVal = static_cast<unsigned long>(ir.value_unsafe());
+        }
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<long long, T>::value>::type* =
+        nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        long long returnVal{};
+        auto ir = v.get_int64();
+        if (!ir.error()) {
+            returnVal = static_cast<long long>(ir.value_unsafe());
+        }
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<std::wstring, T>::value>::type* =
+        nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        T returnVal;
+        auto sr = v.get_string();
+        if (!sr.error()) {
+            auto stringView = sr.value_unsafe();
+            // todo: tidy up?
+            returnVal = Utils::stringConverter.from_bytes(
+              stringView.data(), stringView.data() + stringView.size());
+        }
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<std::string, T>::value>::type* =
+        nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        T returnVal;
+        auto sr = v.get_string();
+        if (!sr.error()) {
+            returnVal = sr.value_unsafe();
+        }
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<double, T>::value>::type* = nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        double returnVal{};
+        auto dr = v.get_double();
+        if (!dr.error()) {
+            returnVal = static_cast<double>(dr.value_unsafe());
+        }
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<float, T>::value>::type* = nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        float returnVal{};
+        auto fr = v.get_double();
+        if (!fr.error()) {
+            returnVal = static_cast<float>(fr.value_unsafe());
+        }
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<bool, T>::value>::type* = nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        bool returnVal{};
+        auto br = v.get_bool();
+        if (!br.error()) {
+            returnVal = br.value_unsafe();
+        }
+        return returnVal;
+    }
+
+    template<class T,
+      typename std::enable_if<
+        std::is_same<std::shared_ptr<typename T::element_type>,
+          T>::value>::type* = nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        return std::make_shared<T::element_type>(toType<T::element_type>(v));
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<std::vector<typename T::value_type>,
+        T>::value>::type* = nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        T returnArray;
+
+        auto ar = v.get_array();
+        if (!ar.error()) {
+            auto arrayValue = ar.value_unsafe();
+            for (auto child : arrayValue) {
+                if (!child.error()) {
+                    returnArray.push_back(
+                      toType<typename T::value_type>(child.value_unsafe()));
+                }
+            }
+        }
+
+        return returnArray;
+    }
+
+    template<class T,
+      typename std::enable_if<std::is_same<std::set<typename T::value_type>,
+        T>::value>::type* = nullptr>
+    static T toType(simdjson::ondemand::value v)
+    {
+        T returnSet;
+
+        auto ar = v.get_array();
+        if (!ar.error()) {
+            auto arrayValue = ar.value_unsafe();
+            for (auto child : arrayValue) {
+                if (!child.error()) {
+                    returnSet.insert(
+                      toType<typename T::value_type>(child.value_unsafe()));
+                }
+            }
+        }
+
+        return returnSet;
+    }
+
+    /////////////////////////////////////
     template<typename JsonValue, typename ParentClass>
     static void writeToMemberField(
       const simdjson::ondemand::raw_json_string keyName,
@@ -58,14 +289,12 @@ class SimdJsonObj : public Properties<DerivedClass>
         constexpr auto sizeOfProperties =
           std::tuple_size<decltype(object.getProperties())>::value;
 
-        // This approach may be slow, need to compare with simdjson DOM Api
         Utils::for_sequence(
           std::make_index_sequence<sizeOfProperties>{}, [&](auto i) {
               constexpr auto property = std::get<i>(object.getProperties());
               using Type = typename decltype(property)::Type;
               if (keyName == property.name) {
-                  object.*(property.member) =
-                    SimdJsonConverter::template toType<Type>(simdJsonVal);
+                  object.*(property.member) = toType<Type>(simdJsonVal);
               }
           });
     }
@@ -139,7 +368,7 @@ class SimdJsonObj : public Properties<DerivedClass>
     static void filterObject(simdjson::ondemand::object jsonObj,
       MemberObject& memberObject)
     {
-        //No-op
+        // No-op
     }
 
     template<typename ParentObject>
@@ -156,7 +385,6 @@ class SimdJsonObj : public Properties<DerivedClass>
         }
         auto objVal = objectResult.value_unsafe();
 
-        // This approach may be slow, need to compare with simdjson DOM Api
         Utils::for_sequence(
           std::make_index_sequence<sizeOfProperties>{}, [&](auto i) {
               constexpr auto property =
@@ -168,68 +396,47 @@ class SimdJsonObj : public Properties<DerivedClass>
           });
     }
 
-    template<typename ParentObject>//, typename std::enable_if<std::is_same<std::vector<int>, MemberObject>::type>::type* = nullptr>
-    static void handleArray(
-      ParentObject& parentObject,
-      simdjson::ondemand::value jsonVal,
-      simdjson::ondemand::raw_json_string keyName)
+    template<typename ParentObject> //, typename
+                                    //std::enable_if<std::is_same<std::vector<int>,
+                                    //MemberObject>::type>::type* = nullptr>
+                                    static void handleArray(
+                                      ParentObject& parentObject,
+                                      simdjson::ondemand::value jsonVal,
+                                      simdjson::ondemand::raw_json_string
+                                        keyName)
     {
-        auto ar = jsonVal.get_array();
-        if (ar.error()) {
-            return;
-        }
-        auto arrayValue = ar.value_unsafe();
-
         constexpr auto sizeOfProperties =
           std::tuple_size<decltype(parentObject.getProperties())>::value;
 
-        // This approach may be slow, need to compare with simdjson DOM Api
         Utils::for_sequence(
           std::make_index_sequence<sizeOfProperties>{}, [&](auto i) {
               constexpr auto property =
                 std::get<i>(parentObject.getProperties());
               using Type = typename decltype(property)::Type;
               if (keyName == property.name) {
-                for (auto child : arrayValue) {
-                    //Decide whether to push back fundamental value or object or container.
-                    //To either vector or set.
-                    //parentObject.*(property.member).push_back(SimdJsonConverter::template toType<Type>(jsonVal));
-                }
+                  parentObject.*(property.member) = toType<Type>(jsonVal);
               }
           });
     }
 
     template<typename MemberObject>
-    using IsMemberObjectSet = std::is_same<MemberObject, std::set<typename MemberObject::value_type>>;
-
-    /*template<typename MemberObject, typename std::enable_if<IsMemberObjectSet<MemberObject>::value>::type* = nullptr>
-    static void writeToArray(
-      std::set<typename MemberObject>& memberObject,
-      simdjson::ondemand::value jsonVal,
-      simdjson::ondemand::raw_json_string key)
-    {
-        auto ar = jsonVal.get_array();
-        if (ar.error()) {
-            return;
-        }
-        auto a = ar.value_unsafe();
-        for (auto child : a) {
-            MemberObject::value_type newType;
-            recursive_processor(newType, child);
-            memberObject.insert(toType<typename T::value_type>(newType))
-        }
-    }*/
+    using IsMemberObjectSet =
+      std::is_same<MemberObject, std::set<typename MemberObject::value_type>>;
 
     template<typename MemberObject>
     using IsNotMemberObjectSet = std::negation<IsMemberObjectSet<MemberObject>>;
 
     template<typename MemberObject>
-    using IsNotMemberObjectVector = std::negation<std::is_same<MemberObject, std::vector<typename MemberObject::value_type>>>;
+    using IsNotMemberObjectVector = std::negation<std::is_same<MemberObject,
+      std::vector<typename MemberObject::value_type>>>;
 
     template<typename MemberObject>
-    using IsNotVectorOrSet = std::conjunction<IsNotMemberObjectSet<MemberObject>, IsNotMemberObjectVector<MemberObject>>;
+    using IsNotVectorOrSet =
+      std::conjunction<IsNotMemberObjectSet<MemberObject>,
+        IsNotMemberObjectVector<MemberObject>>;
 
-    /*template<typename MemberObject, typename std::enable_if<IsNotMemberObjectSet<MemberObject>::value>::type* = nullptr >
+    /*template<typename MemberObject, typename
+    std::enable_if<IsNotMemberObjectSet<MemberObject>::value>::type* = nullptr >
     static void writeToArray(MemberObject& memberObject,
       simdjson::ondemand::value jsonVal,
       simdjson::ondemand::raw_json_string key)
@@ -306,9 +513,11 @@ class SimdJsonObj : public Properties<DerivedClass>
     std::string toJsonStr() const
     {
         std::stringstream ss;
-        minijson::object_writer writer(ss); // wrap a std::ostream
+        minijson::object_writer writer(ss);
         serializeToWriter(writer);
         writer.close();
+        // be nice if this could be replaced with something that doesn't make an
+        // extra copy.
         return ss.str();
     }
 

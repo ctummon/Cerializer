@@ -1,5 +1,6 @@
 #pragma once
 
+#include <unordered_map>
 namespace Cerializer {
 template<class DerivedClass>
 class Properties

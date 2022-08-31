@@ -2,7 +2,6 @@
 
 #include <codecvt>
 #include <locale>
-#include <unordered_map>
 
 namespace Cerializer {
 namespace Utils {
@@ -18,9 +17,6 @@ for_sequence(std::integer_sequence<T, S...>, F&& f)
 }
 
 #define S_PROPERTIES_BEGIN                                                     \
-  protected:                                                                   \
-    std::unordered_map<char*, int> mPrivateTupleIndexMap;                      \
-                                                                               \
   public:                                                                      \
     constexpr static auto getProperties()                                      \
     {                                                                          \
@@ -46,6 +42,5 @@ return std::make_tuple(
 
 static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>
   stringConverter;
-
 } // namespace Utils
 } // namespace Cerializer
