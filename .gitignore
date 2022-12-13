@@ -4,3 +4,4 @@ Debug
 /CerializerTests/CerializerTests.vcxproj.user
 /Cerializer/Cerializer.vcxproj.user
 Build
+.DS_Store

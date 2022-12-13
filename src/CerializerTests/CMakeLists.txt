@@ -49,14 +49,19 @@ if(${BUILD_SIMD_JSON})
 endif(${BUILD_SIMD_JSON})
 
 add_executable(CerializerTests ${SourceFiles})
-
+message(STATUS "Includes:")
+message(STATUS "${PROJECT_SOURCE_DIR}/src")
+message(STATUS "${PROJECT_SOURCE_DIR}/thirdparty")
+message(STATUS "${PROJECT_SOURCE_DIR}/thirdparty/rapidjson/include")
+message(STATUS "${PROJECT_SOURCE_DIR}/thirdparty/nlohmann/json/include")
+message(STATUS "${PROJECT_SOURCE_DIR}/thirdparty/simdjson/singleheader")
 target_include_directories(
     CerializerTests PUBLIC
     "${PROJECT_SOURCE_DIR}/src"
-    "${PROJECT_SOURCE_DIR}/thirdparty/"
+    "${PROJECT_SOURCE_DIR}/thirdparty"
     "${PROJECT_SOURCE_DIR}/thirdparty/rapidjson/include"
     "${PROJECT_SOURCE_DIR}/thirdparty/nlohmann/json/include"
-    "${PROJECT_SOURCE_DIR}/thirdparty/simdjson/singleheader/"
+    "${PROJECT_SOURCE_DIR}/thirdparty/simdjson/singleheader"
 )
 
 if(${BUILD_CPP_REST})

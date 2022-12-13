@@ -29,7 +29,7 @@ class Properties
         return PropertyImpl<T, IdentiferType>{ member, name };
     }
 
-    using DerivedClassAlias = typename DerivedClass;
+    using DerivedClassAlias = DerivedClass;
 
   protected:
     Properties() = default;

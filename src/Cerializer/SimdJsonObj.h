@@ -23,7 +23,6 @@ namespace Cerializer {
 
 template<typename DerivedClass>
 class SimdJsonObj : public Properties<DerivedClass>
-
 {
 
 template<typename MemberObject>
@@ -67,7 +66,7 @@ using ShouldNotHandleObject = std::conjunction<
 
     template<typename MemberObject, typename std::enable_if<std::is_base_of_v<SimdJsonObj<MemberObject>,MemberObject>>::type* = nullptr>
     static bool writeObjectToFieldImpl(
-      simdjson::fallback::ondemand::object jsonObj,
+      simdjson::ondemand::object jsonObj,
       MemberObject& memberObject)
       {
         for (auto field : jsonObj) {
@@ -80,7 +79,7 @@ using ShouldNotHandleObject = std::conjunction<
 
     template<typename MemberObject, typename std::enable_if<IsNotMemberObject<MemberObject>::value>::type* = nullptr>
     static bool writeObjectToFieldImpl(
-      simdjson::fallback::ondemand::object jsonObj,
+      simdjson::ondemand::object jsonObj,
       MemberObject& memberObject)
       {
         //If we don't inherit SimdJsonObj do nothing and return not handled.
@@ -97,7 +96,7 @@ using ShouldNotHandleObject = std::conjunction<
     static void filterObject(simdjson::ondemand::object jsonObj,
       std::optional<typename MemberObject::value_type>& memberObject)
     {
-        MemberObject::value_type innerType;
+        typename MemberObject::value_type innerType;
         if(writeObjectToFieldImpl(jsonObj, innerType)){
             memberObject = std::make_optional<MemberObject::value_type>(innerType);
         }
@@ -108,7 +107,7 @@ using ShouldNotHandleObject = std::conjunction<
     static void filterObject(simdjson::ondemand::object jsonObj,
       std::shared_ptr<typename MemberObject::element_type>& memberObject)
     {
-        MemberObject::element_type innerType;
+        typename MemberObject::element_type innerType;
         if(writeObjectToFieldImpl(jsonObj, innerType)){
             memberObject = std::make_shared<MemberObject::element_type>(innerType);
         }

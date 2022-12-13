@@ -38,7 +38,7 @@ struct RapidJsonConverter
         nullptr>
     static T toType(const rapidjson::Value& v)
     {
-        return std::make_optional<T::value_type>(toType<T::value_type>(v));
+        return std::make_optional<typename T::value_type>(toType<typename T::value_type>(v));
     }
 
     template<class T,

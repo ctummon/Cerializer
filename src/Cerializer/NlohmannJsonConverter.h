@@ -42,7 +42,7 @@ struct NlohmannJsonConverter
         nullptr>
     static T toType(const JsonObj::value_type& data)
     {
-        return std::make_optional<T::value_type>(toType<T::value_type>(data));
+        return std::make_optional<typename T::value_type>(toType<typename T::value_type>(data));
     }
 
     template<class T,
